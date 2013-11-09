@@ -1,0 +1,10 @@
+.*
+*.out
+*.o
+*.so
+*.so*
+*.pro.user
+*.autosave
+demo
+Makefile
+Scanner.cpp
