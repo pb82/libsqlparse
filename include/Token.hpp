@@ -3,7 +3,7 @@
 
 #include <string>
 
-typedef int TOKEN;
+namespace Sql { typedef int TOKEN; }
 
 #define ERROR             -99
 #define ROOT              -98

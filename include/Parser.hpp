@@ -7,10 +7,12 @@
 #include "./BaseParser.hpp"
 #include "./exceptions/IllegalTokenException.h"
 
-#define DEF_THROW throw (         \
-  EndOfStreamException,           \
-  IllegalModificationException,   \
-  IllegalTokenException)
+#define DEF_THROW throw (                       \
+  Exceptions::EndOfStreamException,             \
+  Exceptions::IllegalModificationException,     \
+  Exceptions::IllegalTokenException)
+
+namespace Sql {
 
 class Parser : public BaseParser {
 public:
@@ -33,9 +35,11 @@ private:
    * a token that is not matched by one of the rules in the Lexer
    */
   void feedTokens(const char* source)
-    throw (IllegalModificationException, IllegalTokenException);
+    throw (Exceptions::IllegalModificationException,
+           Exceptions::IllegalTokenException);
 
   Node root;
 };
 
+}
 #endif // PARSER_HPP

@@ -9,6 +9,8 @@
 #include "./exceptions/EndOfStreamException.h"
 #include "./exceptions/IllegalModificationException.h"
 
+namespace Sql {
+
 struct SqlToken {
   TOKEN code;
   std::string value;
@@ -25,7 +27,7 @@ public:
    * increment the stream
    * @return a reference to the current token on the stream
    */
-  const SqlToken& next() throw (EndOfStreamException);
+  const SqlToken& next() throw (Exceptions::EndOfStreamException);
 
   /**
    * @brief hasNext returns true if there are tokens left in the stream and
@@ -39,12 +41,12 @@ public:
    * increment the stream
    * @return a reference to the current token in the stream
    */
-  const SqlToken& peek() const throw (EndOfStreamException);
+  const SqlToken& peek() const throw (Exceptions::EndOfStreamException);
 
   /**
    * @brief consume increment the stream
    */
-  void consume() throw (EndOfStreamException);
+  void consume() throw (Exceptions::EndOfStreamException);
 
   /**
    * @brief feed append tokens to the stream but ensure
@@ -54,7 +56,7 @@ public:
    * @param value
    */
   void feed(TOKEN code, const char* value)
-    throw (IllegalModificationException);
+    throw (Exceptions::IllegalModificationException);
 
   /**
    * @brief reset clear the token collection and reset the
@@ -70,17 +72,18 @@ public:
    * @param tokens the tokens instance to be printed
    * @return a reference to the stream for further operations
    */
-  friend std::ostream& operator<<(std::ostream& stream, const Tokens& tokens);
+  friend std::ostream& Sql::operator<<(std::ostream& stream, const Tokens& tokens);
 
 private:
   /**
    * @brief checkStream ensure there are tokens left
    * in the stream
    */
-  inline void checkStream() const throw (EndOfStreamException);
+  inline void checkStream() const throw (Exceptions::EndOfStreamException);
 
   unsigned int index;
   std::vector<SqlToken> tokens;
 };
 
+}
 #endif // TOKENS_HPP

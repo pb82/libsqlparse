@@ -1,5 +1,8 @@
 #include "../include/Tokens.hpp"
 
+using namespace Sql;
+using namespace Sql::Exceptions;
+
 // Consistency check
 void Tokens::checkStream() const throw (EndOfStreamException) {
   if (index >= tokens.size()) {
@@ -48,11 +51,12 @@ void Tokens::reset() {
 }
 
 // Print the tokens to an external stream
-std::ostream& operator <<(std::ostream& stream, const Tokens& tokens) {
-  for (unsigned int i = 0; i < tokens.tokens.size(); ++i) {
-    const SqlToken& token = tokens.tokens.at(i);
-    stream << "(" << token.code << ": " << token.value << ")" << std::endl;
-  }
-
-  return stream;
+namespace Sql {
+    std::ostream& operator <<(std::ostream& stream, const Tokens& tokens) {
+        for (unsigned int i = 0; i < tokens.tokens.size(); ++i) {
+            const SqlToken& token = tokens.tokens.at(i);
+            stream << "(" << token.code << ": " << token.value << ")" << std::endl;
+        }
+        return stream;
+    }
 }

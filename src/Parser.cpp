@@ -1,5 +1,8 @@
 #include "../include/Parser.hpp"
 
+using namespace Sql;
+using namespace Sql::Exceptions;
+
 void Parser::parse(const char *source) DEF_THROW {
   tokens.reset();
   feedTokens(source);

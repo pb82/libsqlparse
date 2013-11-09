@@ -22,8 +22,6 @@ flex.clean = ../../src/Scanner.cpp
 flex.name = flex++
 QMAKE_EXTRA_COMPILERS+=flex
 
-LIBS += -lfl
-
 HEADERS += \
     ../include/Token.hpp \
     ../include/Node.hpp \
