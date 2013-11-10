@@ -1,8 +1,14 @@
 #include "../include/BaseParser.hpp"
 
-using namespace Sql;
+namespace Sql {
+using namespace Exceptions;
 
 Tokens BaseParser::tokens;
+
+std::map<TOKEN, std::string> Token::Literals = {
+    {KEYWORD,       "KEYWORD"},
+    {NUMBER,        "NUMBER"}
+};
 
 /**
  * <Token stream modification methods>
@@ -23,10 +29,50 @@ const Tokens& BaseParser::getTokens() const {
   * <Token stream query methods>
   */
 
-bool BaseParser::is (TOKEN code) const DEF_THROW {
-    return code == tokens.peek ().code;
+template <>
+bool BaseParser::is(TOKEN t) const DEF_THROW {
+    return tokens.peek ().code == t;
 }
 
-bool BaseParser::is (const char *value) const DEF_THROW {
-    return tokens.peek ().value.compare (value) == 0;
+template <>
+bool BaseParser::is(const char *t) const DEF_THROW {
+    return tokens.peek ().value.compare (t) == 0;
+}
+
+template <>
+bool BaseParser::_is(std::initializer_list<TOKEN> &&ts) const DEF_THROW {
+    for (TOKEN t: ts) {
+        if (is(t)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template <>
+bool BaseParser::_is(std::initializer_list<const char *> &&ts) const DEF_THROW {
+    for (const char *t: ts) {
+        if (is(t)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+template <>
+void BaseParser::expect(TOKEN t) DEF_THROW {
+    const SqlToken& token = next();
+    if (token.code != t) {
+        throw UnexpectedTokenException(token.value, {Token::Literals[t]});
+    }
+}
+
+template <>
+void BaseParser::expect(const char *t) DEF_THROW {
+    const SqlToken& token = next();
+    if (token.value.compare (t) != 0) {
+        throw UnexpectedTokenException(token.value, {t});
+    }
+}
+
 }

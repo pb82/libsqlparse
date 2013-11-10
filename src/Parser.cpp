@@ -1,7 +1,7 @@
 #include "../include/Parser.hpp"
 
-using namespace Sql;
-using namespace Sql::Exceptions;
+namespace Sql {
+using namespace Exceptions;
 
 void Parser::parse(const char *source) DEF_THROW {
   reset ();
@@ -38,4 +38,6 @@ void Parser::feedTokens(const char *source)
 
 void Parser::printTokensToStream(std::ostream &stream) const {
   stream << getTokens ();
+}
+
 }

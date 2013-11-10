@@ -1,7 +1,7 @@
 #include "../include/Tokens.hpp"
 
-using namespace Sql;
-using namespace Sql::Exceptions;
+namespace Sql {
+using namespace Exceptions;
 
 // Reset the stream and clear the tokens
 void Tokens::reset() {
@@ -20,12 +20,13 @@ void Tokens::feed(TOKEN code, const char *value)
 }
 
 // Print the tokens to an external stream
-namespace Sql {
-    std::ostream& operator <<(std::ostream& stream, const Tokens& tokens) {
-        for (unsigned int i = 0; i < tokens.tokens.size(); ++i) {
-            const SqlToken& token = tokens.tokens.at(i);
-            stream << "(" << token.code << ": " << token.value << ")" << std::endl;
-        }
-        return stream;
+
+std::ostream& operator <<(std::ostream& stream, const Tokens& tokens) {
+    for (unsigned int i = 0; i < tokens.tokens.size(); ++i) {
+        const SqlToken& token = tokens.tokens.at(i);
+        stream << "(" << token.code << ": " << token.value << ")" << std::endl;
     }
+    return stream;
+}
+
 }

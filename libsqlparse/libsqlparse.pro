@@ -30,7 +30,8 @@ HEADERS += \
     ../include/exceptions/EndOfStreamException.h \
     ../include/exceptions/IllegalModificationException.h \
     ../include/exceptions/IllegalTokenException.h \
-    ../include/BaseParser.hpp
+    ../include/BaseParser.hpp \
+    ../include/exceptions/UnexpectedTokenException.hpp
 
 OTHER_FILES += \
     ../resource/sql.l
