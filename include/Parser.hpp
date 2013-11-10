@@ -3,14 +3,9 @@
 
 #include <FlexLexer.h>
 #include <sstream>
+#include <algorithm>
 
 #include "./BaseParser.hpp"
-#include "./exceptions/IllegalTokenException.h"
-
-#define DEF_THROW throw (                       \
-  Exceptions::EndOfStreamException,             \
-  Exceptions::IllegalModificationException,     \
-  Exceptions::IllegalTokenException)
 
 namespace Sql {
 
@@ -24,7 +19,7 @@ public:
    * purposes
    * @param stream
    */
-  void printTokensToStream(std::ostream& stream);
+  void printTokensToStream(std::ostream& stream) const;
 private:
   /**
    * @brief feedTokens create a token stream from the source input

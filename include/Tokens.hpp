@@ -27,26 +27,37 @@ public:
    * increment the stream
    * @return a reference to the current token on the stream
    */
-  const SqlToken& next() throw (Exceptions::EndOfStreamException);
+  inline const SqlToken& next() throw (Exceptions::EndOfStreamException) {
+      checkStream();
+      return tokens.at(index++);
+  }
 
   /**
    * @brief hasNext returns true if there are tokens left in the stream and
    * a call to 'next' will not throw an exception. Returns false otherwise.
    * @return true if tokens left, false otherwise
    */
-  bool hasNext() const;
+  inline bool hasNext() const {
+      return index < tokens.size();
+  }
 
   /**
    * @brief peek return the current token but do not
    * increment the stream
    * @return a reference to the current token in the stream
    */
-  const SqlToken& peek() const throw (Exceptions::EndOfStreamException);
+  inline const SqlToken& peek() const throw (Exceptions::EndOfStreamException) {
+      checkStream();
+      return tokens.at(index);
+  }
 
   /**
    * @brief consume increment the stream
    */
-  void consume() throw (Exceptions::EndOfStreamException);
+  inline void consume() throw (Exceptions::EndOfStreamException) {
+      checkStream ();
+      index++;
+  }
 
   /**
    * @brief feed append tokens to the stream but ensure
@@ -72,14 +83,20 @@ public:
    * @param tokens the tokens instance to be printed
    * @return a reference to the stream for further operations
    */
-  friend std::ostream& Sql::operator<<(std::ostream& stream, const Tokens& tokens);
+  friend std::ostream& Sql::operator<<(
+          std::ostream& stream,
+          const Tokens& tokens);
 
 private:
   /**
    * @brief checkStream ensure there are tokens left
    * in the stream
    */
-  inline void checkStream() const throw (Exceptions::EndOfStreamException);
+  inline void checkStream() const throw (Exceptions::EndOfStreamException) {
+      if (index >= tokens.size()) {
+        throw Exceptions::EndOfStreamException();
+      }
+  }
 
   unsigned int index;
   std::vector<SqlToken> tokens;

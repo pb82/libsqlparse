@@ -4,10 +4,8 @@ using namespace Sql;
 using namespace Sql::Exceptions;
 
 void Parser::parse(const char *source) DEF_THROW {
-  tokens.reset();
+  reset ();
   feedTokens(source);
-
-  return;
 }
 
 void Parser::feedTokens(const char *source)
@@ -18,12 +16,26 @@ void Parser::feedTokens(const char *source)
 
   while ((current_token = lexer.yylex()) != 0) {
     if (ERROR == current_token) {
-      throw IllegalTokenException(lexer.YYText());
+        // Tokenizer encountered invalid token
+        throw IllegalTokenException(lexer.YYText());
+    } else if (KEYWORD == current_token) {
+        // Save keyword in capital form in order to be able
+        // to compare them easily
+        std::string keyword = lexer.YYText ();
+        std::transform(
+                    keyword.begin (),
+                    keyword.end (),
+                    keyword.begin (),
+                    toupper);
+        feed (current_token, keyword.c_str ());
+    } else {
+        // Store all other tokens normally with code
+        // and value
+        feed (current_token, lexer.YYText());
     }
-    tokens.feed(current_token, lexer.YYText());
   }
 }
 
-void Parser::printTokensToStream(std::ostream &stream) {
-  stream << tokens;
+void Parser::printTokensToStream(std::ostream &stream) const {
+  stream << getTokens ();
 }
