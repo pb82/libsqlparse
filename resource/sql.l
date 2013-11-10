@@ -121,6 +121,33 @@
 (?i:WHEN)                           return KEYWORD;
 (?i:WHERE)                          return KEYWORD;
 
+'(?:[^']|'')*'                      return STRING;
+[xX]'(?:[^']|'')*'                  return BLOB;
+":"[1-9][0-9]*                      return PARAMETER;
+[A-Za-z][A-Za-z0-9_$]*              return VALUE;
+
+"("                                 return LP;
+")"                                 return RP;
+"-"                                 return MINUS;
+"+"                                 return PLUS;
+";"                                 return SEMI;
+"*"                                 return STAR;
+"/"                                 return SLASH;
+"%"                                 return REM;
+(=|==)                              return EQ;
+(<>|!=)                             return NE;
+"<="                                return LE;
+"<"                                 return LT;
+">="                                return GE;
+">"                                 return GT;
+"<<"                                return LSHIFT;
+">>"                                return RSHIFT;
+","                                 return COMMA;
+"&"                                 return BITAND;
+"|"                                 return BITOR;
+"~"                                 return BITNOT;
+"||"                                return CONCAT;
+"."                                 return DOT;
 
 [-]?[0-9]+                          |
 [-]?[0-9]+"."[0-9]*                 |
