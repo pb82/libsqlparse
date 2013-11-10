@@ -11,7 +11,19 @@ namespace Sql {
 
 class Parser : public BaseParser {
 public:
-  void parse(const char* source) DEF_THROW;
+  void parse() DEF_THROW;
+
+  /**
+   * @brief feedTokens create a token stream from the source input
+   * throws IllegalModificationException when tokens are added but
+   * the stream already had read access (consume, next)
+   *
+   * throws IllegalTokenException when the source string contains
+   * a token that is not matched by one of the rules in the Lexer
+   */
+  void feed(const char* source)
+    throw (Exceptions::IllegalModificationException,
+           Exceptions::IllegalTokenException);
 
   /**
    * @brief printTokensToStream get a string representation of the tokens
@@ -21,18 +33,6 @@ public:
    */
   void printTokensToStream(std::ostream& stream) const;
 private:
-  /**
-   * @brief feedTokens create a token stream from the source input
-   * throws IllegalModificationException when tokens are added but
-   * the stream already had read access (consume, next)
-   *
-   * throws IllegalTokenException when the source string contains
-   * a token that is not matched by one of the rules in the Lexer
-   */
-  void feedTokens(const char* source)
-    throw (Exceptions::IllegalModificationException,
-           Exceptions::IllegalTokenException);
-
   Node root;
 };
 

@@ -3,13 +3,16 @@
 namespace Sql {
 using namespace Exceptions;
 
-void Parser::parse(const char *source) DEF_THROW {
-  reset ();
-  feedTokens(source);
+void Parser::parse() DEF_THROW {
+  if (is("ALTER")) {
+
+  }
 }
 
-void Parser::feedTokens(const char *source)
+void Parser::feed(const char *source)
   throw (IllegalModificationException, IllegalTokenException) {
+  reset ();
+
   TOKEN current_token;
   std::istringstream ss(source);
   yyFlexLexer lexer(&ss, 0);
@@ -27,11 +30,11 @@ void Parser::feedTokens(const char *source)
                     keyword.end (),
                     keyword.begin (),
                     toupper);
-        feed (current_token, keyword.c_str ());
+        BaseParser::feed (current_token, keyword.c_str ());
     } else {
         // Store all other tokens normally with code
         // and value
-        feed (current_token, lexer.YYText());
+        BaseParser::feed (current_token, lexer.YYText());
     }
   }
 }

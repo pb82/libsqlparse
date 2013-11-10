@@ -24,6 +24,7 @@ namespace Token {
 class BaseParser {
 public:
     virtual ~BaseParser() = default;
+    virtual void parse() DEF_THROW = 0;
 private:
     static Tokens tokens;
 protected:
@@ -31,6 +32,7 @@ protected:
      * <Token stream modification methods>
      */
     void reset();
+
     void feed(TOKEN code, const char* value)
       throw (Exceptions::IllegalModificationException);
 

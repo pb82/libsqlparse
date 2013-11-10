@@ -31,7 +31,8 @@ HEADERS += \
     ../include/exceptions/IllegalModificationException.h \
     ../include/exceptions/IllegalTokenException.h \
     ../include/BaseParser.hpp \
-    ../include/exceptions/UnexpectedTokenException.hpp
+    ../include/exceptions/UnexpectedTokenException.hpp \
+    ../include/parsers/AlterTable.hpp
 
 OTHER_FILES += \
     ../resource/sql.l
