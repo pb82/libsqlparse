@@ -1,8 +1,6 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
-#include <string>
-
 namespace Sql { typedef int TOKEN; }
 
 #define ERROR             -99

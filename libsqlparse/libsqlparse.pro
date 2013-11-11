@@ -8,7 +8,8 @@ QMAKE_CXXFLAGS += -std=c++11
 SOURCES += \
     ../src/Parser.cpp \
     ../src/Tokens.cpp \
-    ../src/BaseParser.cpp
+    ../src/BaseParser.cpp \
+    ../src/parsers/AlterTable.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES

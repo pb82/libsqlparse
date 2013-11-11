@@ -7,7 +7,7 @@ namespace Sql { namespace Parsers {
 
 class AlterTable : public BaseParser {
 public:
-    void parse() DEF_THROW;
+    void parse(Node *const node) DEF_THROW;
 };
 
 } }

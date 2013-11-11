@@ -24,10 +24,10 @@ namespace Token {
 class BaseParser {
 public:
     virtual ~BaseParser() = default;
-    virtual void parse() DEF_THROW = 0;
 private:
     static Tokens tokens;
 protected:
+    virtual void parse(Node *const node) DEF_THROW = 0;
     /**
      * <Token stream modification methods>
      */

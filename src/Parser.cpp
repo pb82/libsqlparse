@@ -4,9 +4,10 @@ namespace Sql {
 using namespace Exceptions;
 
 void Parser::parse() DEF_THROW {
-  if (is("ALTER")) {
+    parse(&root);
+}
 
-  }
+void Parser::parse (Node *const node) DEF_THROW {
 }
 
 void Parser::feed(const char *source)

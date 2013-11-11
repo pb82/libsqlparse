@@ -7,7 +7,11 @@ Tokens BaseParser::tokens;
 
 std::map<TOKEN, std::string> Token::Literals = {
     {KEYWORD,       "KEYWORD"},
-    {NUMBER,        "NUMBER"}
+    {NUMBER,        "NUMBER"},
+    {BLOB,          "BLOB"},
+    {VALUE,         "VALUE"},
+    {PARAMETER,     "PARAMETER"},
+    {STRING,        "STRING"}
 };
 
 /**
