@@ -3,7 +3,11 @@
 namespace Sql {
 using namespace Exceptions;
 
+// Static initialization for the token stream
 Tokens BaseParser::tokens;
+
+// Static initialization for the fragment parsers map
+std::map<std::string, std::unique_ptr<BaseParser>> BaseParser::parsers;
 
 std::map<TOKEN, std::string> Token::Literals = {
     {KEYWORD,       "KEYWORD"},
@@ -64,19 +68,33 @@ bool BaseParser::_is(std::initializer_list<const char *> &&ts) const DEF_THROW {
 }
 
 template <>
-void BaseParser::expect(TOKEN t) DEF_THROW {
+const SqlToken& BaseParser::expect(TOKEN t) DEF_THROW {
     const SqlToken& token = next();
     if (token.code != t) {
         throw UnexpectedTokenException(token.value, {Token::Literals[t]});
     }
+    return token;
 }
 
 template <>
-void BaseParser::expect(const char *t) DEF_THROW {
+const SqlToken& BaseParser::expect(const char *t) DEF_THROW {
     const SqlToken& token = next();
     if (token.value.compare (t) != 0) {
         throw UnexpectedTokenException(token.value, {t});
     }
+    return token;
+}
+
+void BaseParser::registerParser(const char *type, BaseParser *parser) const {
+  parsers[type] = std::unique_ptr<BaseParser>(parser);
+}
+
+BaseParser& BaseParser::getParser(const char *type) const
+throw (UnknownSubsetException) {
+  if (parsers.find(type) == parsers.end()) {
+    throw UnknownSubsetException(type);
+  }
+  return *(parsers[type]);
 }
 
 }

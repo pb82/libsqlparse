@@ -2,12 +2,28 @@
 
 namespace Sql {
 using namespace Exceptions;
+using namespace Parsers;
+
 
 void Parser::parse() DEF_THROW {
+    registerSubsets();
     parse(&root);
 }
 
 void Parser::parse (Node *const node) DEF_THROW {
+  if (is("EXPLAIN")) {
+    consume();
+    if (is("QUERY")) {
+      consume();
+      expect("PLAN");
+    }
+  }
+
+  getParser(peek().value.c_str()).parse(node);
+}
+
+void Parser::registerSubsets() const {
+  registerParser("ALTER", new AlterTable);
 }
 
 void Parser::feed(const char *source)

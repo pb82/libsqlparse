@@ -6,12 +6,15 @@
 #include <algorithm>
 
 #include "./BaseParser.hpp"
+#include "parsers/AlterTable.hpp"
 
 namespace Sql {
 
 class Parser : public BaseParser {
 public:
   void parse() DEF_THROW;
+
+  static std::map<std::string, std::unique_ptr<BaseParser>> parsers;
 
   /**
    * @brief feedTokens create a token stream from the source input
@@ -34,6 +37,7 @@ public:
   void printTokensToStream(std::ostream& stream) const;
 private:
   void parse(Node *const node) DEF_THROW;
+  void registerSubsets() const;
   Node root;
 };
 

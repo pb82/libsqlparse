@@ -2,11 +2,13 @@
 #define BASEPARSER_HPP
 
 #include <map>
+#include <memory>
 
 #include "./Node.hpp"
 #include "./Tokens.hpp"
 #include "./exceptions/IllegalTokenException.h"
 #include "./exceptions/UnexpectedTokenException.hpp"
+#include "./exceptions/UnknonwSubsetException.h"
 
 #define DEF_THROW throw (                       \
   Exceptions::EndOfStreamException,             \
@@ -24,11 +26,20 @@ namespace Token {
 class BaseParser {
 public:
     virtual ~BaseParser() = default;
-private:
-    static Tokens tokens;
-    static std::map<std::string, BaseParser *> parsers;
-protected:
     virtual void parse(Node *const node) DEF_THROW = 0;
+private:
+    /**
+     * @brief tokens The token stream as a static variable, so all the subset
+     * parsers access one unique instance
+     */
+    static Tokens tokens;
+
+    /**
+     * @brief parsers A map to store the subset parsers. Static so that all
+     * subset parsers access the same instance
+     */
+    static std::map<std::string, std::unique_ptr<BaseParser>> parsers;
+protected:
     /**
      * <Token stream modification methods>
      */
@@ -96,7 +107,22 @@ protected:
       * throw on unexpected token
       */
     template <typename T>
-    void expect(T t) DEF_THROW;
+    const SqlToken& expect(T t) DEF_THROW;
+
+    /**
+     * @brief registerParser register a parser for a subset of the SQL Syntax
+     * @param type Keyword that invokes this parser ('ALTER')
+     * @param parser Parser instance
+     */
+    void registerParser(const char *type, BaseParser *parser) const;
+
+    /**
+     * @brief getParse Get a reference to a subset parser for the given type
+     * @param type
+     * @return
+     */
+    BaseParser& getParser(const char* type) const
+    throw (Exceptions::UnknownSubsetException);
 };
 
 }

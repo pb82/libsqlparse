@@ -2,6 +2,7 @@
 #define ALTERTABLE_HPP
 
 #include "../BaseParser.hpp"
+#include <iostream>
 
 namespace Sql { namespace Parsers {
 
