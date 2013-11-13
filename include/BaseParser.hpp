@@ -26,6 +26,7 @@ public:
     virtual ~BaseParser() = default;
 private:
     static Tokens tokens;
+    static std::map<std::string, BaseParser *> parsers;
 protected:
     virtual void parse(Node *const node) DEF_THROW = 0;
     /**
