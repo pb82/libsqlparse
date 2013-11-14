@@ -34,5 +34,6 @@ namespace Sql { typedef int TOKEN; }
 #define BITNOT              26
 #define CONCAT              27
 #define DOT                 28
+#define IDENTIFIER          29
 
 #endif // TOKEN_HPP

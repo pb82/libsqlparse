@@ -121,6 +121,8 @@
 (?i:WHEN)                           return KEYWORD;
 (?i:WHERE)                          return KEYWORD;
 
+\"(\\.|[^"])*\"                     return IDENTIFIER;
+
 '(?:[^']|'')*'                      return STRING;
 [xX]'(?:[^']|'')*'                  return BLOB;
 ":"[1-9][0-9]*                      return PARAMETER;
