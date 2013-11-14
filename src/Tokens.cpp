@@ -11,12 +11,12 @@ void Tokens::reset() {
 
 // Append tokens to the stream. Only permitted if no previous read
 // operatio occurred.
-void Tokens::feed(TOKEN code, const char *value)
+void Tokens::feed(TOKEN code, const char *value, unsigned int line)
   throw (IllegalModificationException) {
   if (0 < index) {
     throw IllegalModificationException();
   }
-  tokens.push_back({code, value});
+  tokens.push_back({code, value, line});
 }
 
 // Print the tokens to an external stream

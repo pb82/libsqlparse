@@ -10,14 +10,20 @@ class UnexpectedTokenException : public std::runtime_error {
 public:
     UnexpectedTokenException(
         std::string found,
-        std::initializer_list<std::string> expected)
+        std::initializer_list<std::string> expected,
+        unsigned int line)
         : std::runtime_error ("Unexpected token"),
           found(found),
-          expected(expected) { }
+          expected(expected),
+          line(line) { }
 
     const std::string& getFound() const { return found; }
     const std::vector<std::string>& getExpected() const {
         return expected;
+    }
+
+    unsigned int getLine() {
+      return line;
     }
 private:
     /**
@@ -31,6 +37,8 @@ private:
      * TODO: accept token codes here?
      */
     std::vector<std::string> expected;
+
+    unsigned int line;
 };
 
 

@@ -45,7 +45,7 @@ protected:
      */
     void reset();
 
-    void feed(TOKEN code, const char* value)
+    void feed(TOKEN code, const char* value, unsigned int line)
       throw (Exceptions::IllegalModificationException);
 
     // Get an immutable reference to the token store
@@ -122,7 +122,9 @@ protected:
      * @return
      */
     BaseParser& getParser(const char* type) const
-    throw (Exceptions::UnknownSubsetException);
+    throw (
+        Exceptions::UnknownSubsetException,
+        Exceptions::EndOfStreamException);
 };
 
 }

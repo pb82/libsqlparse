@@ -22,7 +22,10 @@ void AlterTable::parse (Node * const node) DEF_THROW {
     }
     expect(VALUE);
   } else {
-    throw UnexpectedTokenException(peek().value, {"RENAME", "ADD"});
+    throw UnexpectedTokenException(
+          peek().value,
+          {"RENAME", "ADD"},
+          peek().line);
   }
 }
 

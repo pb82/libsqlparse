@@ -14,6 +14,7 @@ namespace Sql {
 struct SqlToken {
   TOKEN code;
   std::string value;
+  unsigned int line;
 };
 
 class Tokens {
@@ -66,7 +67,7 @@ public:
    * @param code
    * @param value
    */
-  void feed(TOKEN code, const char* value)
+  void feed(TOKEN code, const char* value, unsigned int line)
     throw (Exceptions::IllegalModificationException);
 
   /**

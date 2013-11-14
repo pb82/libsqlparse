@@ -5,6 +5,7 @@ namespace Sql { typedef int TOKEN; }
 
 #define ERROR             -99
 #define ROOT              -98
+#define NEWLINE           -97
 #define KEYWORD             1
 #define NUMBER              2
 #define STRING              3

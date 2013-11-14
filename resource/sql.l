@@ -157,7 +157,7 @@
 [-]?[0-9]+"."[0-9]*[eE][+-]?[0-9]+  |
 [-]?"."[0-9]*[eE][+-]?[0-9]+        return NUMBER;
 
-\n                                  /* Ignore newlines */
+\n                                  return NEWLINE;
 [ \t]+                              /* Ignore whitespace */
 
 .                                   return ERROR;

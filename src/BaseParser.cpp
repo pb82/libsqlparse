@@ -24,9 +24,9 @@ std::map<TOKEN, std::string> Token::Literals = {
 
 void BaseParser::reset () { tokens.reset (); }
 
-void BaseParser::feed (TOKEN code, const char *value)
+void BaseParser::feed (TOKEN code, const char *value, unsigned int line)
     throw (Exceptions::IllegalModificationException) {
-    tokens.feed (code, value);
+    tokens.feed (code, value, line);
 }
 
 const Tokens& BaseParser::getTokens() const {
@@ -71,7 +71,10 @@ template <>
 const SqlToken& BaseParser::expect(TOKEN t) DEF_THROW {
     const SqlToken& token = next();
     if (token.code != t) {
-        throw UnexpectedTokenException(token.value, {Token::Literals[t]});
+        throw UnexpectedTokenException(
+            token.value,
+            {Token::Literals[t]},
+            token.line);
     }
     return token;
 }
@@ -80,7 +83,7 @@ template <>
 const SqlToken& BaseParser::expect(const char *t) DEF_THROW {
     const SqlToken& token = next();
     if (token.value.compare (t) != 0) {
-        throw UnexpectedTokenException(token.value, {t});
+        throw UnexpectedTokenException(token.value, {t}, token.line);
     }
     return token;
 }
@@ -90,9 +93,9 @@ void BaseParser::registerParser(const char *type, BaseParser *parser) const {
 }
 
 BaseParser& BaseParser::getParser(const char *type) const
-throw (UnknownSubsetException) {
+throw (UnknownSubsetException, EndOfStreamException) {
   if (parsers.find(type) == parsers.end()) {
-    throw UnknownSubsetException(type);
+    throw UnknownSubsetException(type, peek().line);
   }
   return *(parsers[type]);
 }

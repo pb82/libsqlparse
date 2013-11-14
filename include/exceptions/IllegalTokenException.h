@@ -7,9 +7,15 @@
 namespace Sql { namespace Exceptions {
 
 class IllegalTokenException : public std::runtime_error {
-public:
-    IllegalTokenException(const char* token)
-        : std::runtime_error(token) {
+private:
+    unsigned int line;
+public:  
+    IllegalTokenException(const char* token, unsigned int line)
+        : std::runtime_error(token), line(line) {
+    }
+
+    unsigned int getLine() {
+      return line;
     }
 };
 
