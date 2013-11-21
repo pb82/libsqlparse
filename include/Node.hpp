@@ -4,9 +4,15 @@
 #include <vector>
 #include <string>
 
-#include "./Token.hpp"
-
 namespace Sql {
+
+enum NodeType {
+  ROOT,
+  DATABASE,
+  TABLE,
+  ALTER_TABLE,
+  RENAME_TO
+};
 
 struct Node {
 public:
@@ -23,7 +29,7 @@ public:
     * Destroy child nodes
     */
   ~Node() {
-    for (const Node *child: children) {
+    for (Node *child: children) {
       delete child;
     }
   }
@@ -36,7 +42,7 @@ public:
    * @param code token code
    * @return a pointer to the newly inserted node
    */
-  const Node* appendChild(TOKEN code) {
+  Node *appendChild(NodeType code) {
     return appendChild(code, "");
   }
 
@@ -47,16 +53,26 @@ public:
    * @param value (actual Token value)
    * @return a pointer to the newly inserted node
    */
-  const Node* appendChild(TOKEN code, const char* value) {
+  Node *appendChild(NodeType code, const char* value) {
       children.push_back (new Node(code, value));
       return children.at (children.size () -1);
+  }
+
+  /**
+   * @brief appendChild same as above but takes a string reference
+   * @param code
+   * @param value
+   * @return
+   */
+  Node *appendChild(NodeType code, const std::string& value) {
+    return appendChild(code, value.c_str());
   }
 
   /**
    * @brief getCode return this node's code (type)
    * @return the token code
    */
-  TOKEN getCode() const {
+  NodeType getCode() const {
     return code;
   }
 
@@ -76,14 +92,14 @@ private:
    * @param code
    * @param value
    */
-  Node(TOKEN code, const char* value) {
+  Node(NodeType code, const char* value) {
     this->code = code;
     this->value = value;
   }
 
-  TOKEN code;
+  NodeType code;
   std::string value;
-  std::vector<const Node *> children;
+  std::vector<Node *> children;
 };
 
 }

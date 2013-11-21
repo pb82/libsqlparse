@@ -36,7 +36,6 @@ public:
    */
   void printTokensToStream(std::ostream& stream) const;
 private:
-  void parse(Node *const node) DEF_THROW;
   void registerSubsets() const;
   Node root;
 };

@@ -2,6 +2,7 @@
 #define BASEPARSER_HPP
 
 #include <map>
+#include <stack>
 #include <memory>
 
 #include "./Node.hpp"
@@ -26,8 +27,12 @@ namespace Token {
 class BaseParser {
 public:
     virtual ~BaseParser() = default;
-    virtual void parse(Node *const node) DEF_THROW = 0;
+    virtual void parse() DEF_THROW = 0;
 private:
+    /**
+     * @brief nodeStack represents the abstract syntax tree
+     */
+    static std::stack<Node *> nodeStack;
     /**
      * @brief tokens The token stream as a static variable, so all the subset
      * parsers access one unique instance
@@ -125,6 +130,28 @@ protected:
     throw (
         Exceptions::UnknownSubsetException,
         Exceptions::EndOfStreamException);
+
+    /**
+     * @brief add add a child nodeto the current top level node but do not
+     * increase the level
+     * @param type
+     */
+    void add(NodeType type) {
+        nodeStack.top()->appendChild(type);
+    }
+
+    void add(NodeType type, std::string&& value) {
+        nodeStack.top()->appendChild(type, value);
+    }
+
+    void push(NodeType type) {
+        Node *const newTopLevel = nodeStack.top()->appendChild(type);
+        nodeStack.push(newTopLevel);
+    }
+
+    void pop() {
+      nodeStack.pop();
+    }
 };
 
 }

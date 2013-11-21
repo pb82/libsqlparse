@@ -7,19 +7,17 @@ using namespace Parsers;
 
 void Parser::parse() DEF_THROW {
     registerSubsets();
-    parse(&root);
-}
+    push(NodeType::ROOT);
 
-void Parser::parse (Node *const node) DEF_THROW {
-  if (is("EXPLAIN")) {
-    consume();
-    if (is("QUERY")) {
+    if (is("EXPLAIN")) {
       consume();
-      expect("PLAN");
+      if (is("QUERY")) {
+        consume();
+        expect("PLAN");
+      }
     }
-  }
 
-  getParser(peek().value.c_str()).parse(node);
+    getParser(peek().value.c_str()).parse();
 }
 
 void Parser::registerSubsets() const {

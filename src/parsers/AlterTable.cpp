@@ -3,16 +3,19 @@
 namespace Sql { namespace Parsers {
 using namespace Exceptions;
 
-void AlterTable::parse (Node * const node) DEF_THROW {
+void AlterTable::parse () DEF_THROW {
+  push(NodeType::ALTER_TABLE);
+
   expect("ALTER");
   expect("TABLE");
   expect(VALUE);
+
   if (is(DOT)) {
     consume();
     expect(VALUE);
   }
 
-  if (is("RENAME")) {
+  if (is("RENAME")) {        
     consume();
     expect("TO");
     expect(VALUE);

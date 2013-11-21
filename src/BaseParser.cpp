@@ -3,11 +3,14 @@
 namespace Sql {
 using namespace Exceptions;
 
-// Static initialization for the token stream
+// begin static initializations
 Tokens BaseParser::tokens;
 
-// Static initialization for the fragment parsers map
 std::map<std::string, std::unique_ptr<BaseParser>> BaseParser::parsers;
+
+std::stack<Node *> BaseParser::nodeStack;
+
+// end static initializations
 
 std::map<TOKEN, std::string> Token::Literals = {
     {KEYWORD,       "KEYWORD"},
