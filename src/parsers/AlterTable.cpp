@@ -4,21 +4,23 @@ namespace Sql { namespace Parsers {
 using namespace Exceptions;
 
 void AlterTable::parse () DEF_THROW {
-  push(NodeType::ALTER_TABLE);
+  push(ALTER_TABLE);
 
   expect("ALTER");
   expect("TABLE");
-  expect(VALUE);
+  add(NODE_VALUE, expect(VALUE));
 
   if (is(DOT)) {
     consume();
-    expect(VALUE);
+    add(NODE_VALUE, expect(VALUE));
   }
 
-  if (is("RENAME")) {        
+  if (is("RENAME")) {
+    push(RENAME_TO);
     consume();
     expect("TO");
-    expect(VALUE);
+    add(NODE_VALUE, expect(VALUE));
+    pop();
   } else if (is("ADD")) {
     if (is("COLUMN")) {
       consume();
@@ -30,6 +32,8 @@ void AlterTable::parse () DEF_THROW {
           {"RENAME", "ADD"},
           peek().line);
   }
+
+  pop();
 }
 
 } }

@@ -8,8 +8,7 @@ namespace Sql {
 
 enum NodeType {
   ROOT,
-  DATABASE,
-  TABLE,
+  NODE_VALUE,
   ALTER_TABLE,
   RENAME_TO
 };
@@ -82,6 +81,15 @@ public:
    */
   std::string getValue() const {
     return value;
+  }
+
+  /**
+   * @brief getChildren returns an immutable reference to the
+   * children array
+   * @return
+   */
+  const std::vector<Node *>& getChildren() const {
+    return this->children;
   }
 
 private:

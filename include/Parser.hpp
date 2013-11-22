@@ -35,7 +35,9 @@ public:
    * @param stream
    */
   void printTokensToStream(std::ostream& stream) const;
+  void printSyntaxTree(std::ostream& stream) const;
 private:
+  void printSyntaxTreeInternal(std::ostream& stream, const Node *node) const;
   void registerSubsets() const;
   Node root;
 };

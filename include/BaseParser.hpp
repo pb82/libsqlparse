@@ -10,12 +10,14 @@
 #include "./exceptions/IllegalTokenException.h"
 #include "./exceptions/UnexpectedTokenException.hpp"
 #include "./exceptions/UnknonwSubsetException.h"
+#include "./exceptions/IllegalParserStateException.h"
 
 #define DEF_THROW throw (                       \
   Exceptions::EndOfStreamException,             \
   Exceptions::IllegalModificationException,     \
   Exceptions::IllegalTokenException,            \
-  Exceptions::UnexpectedTokenException)
+  Exceptions::UnexpectedTokenException,         \
+  Exceptions::IllegalParserStateException)
 
 #define oneOf(...)  _is({__VA_ARGS__})
 
@@ -30,10 +32,6 @@ public:
     virtual void parse() DEF_THROW = 0;
 private:
     /**
-     * @brief nodeStack represents the abstract syntax tree
-     */
-    static std::stack<Node *> nodeStack;
-    /**
      * @brief tokens The token stream as a static variable, so all the subset
      * parsers access one unique instance
      */
@@ -45,6 +43,11 @@ private:
      */
     static std::map<std::string, std::unique_ptr<BaseParser>> parsers;
 protected:
+    /**
+     * @brief nodeStack represents the abstract syntax tree
+     */
+    static std::stack<Node *> nodeStack;
+
     /**
      * <Token stream modification methods>
      */
@@ -140,13 +143,21 @@ protected:
         nodeStack.top()->appendChild(type);
     }
 
-    void add(NodeType type, std::string&& value) {
+    void add(NodeType type, const std::string& value) {
         nodeStack.top()->appendChild(type, value);
+    }
+
+    void add(NodeType type, const SqlToken& value) {
+        add(type, value.value);
     }
 
     void push(NodeType type) {
         Node *const newTopLevel = nodeStack.top()->appendChild(type);
         nodeStack.push(newTopLevel);
+    }
+
+    void push(Node *const node) {
+      nodeStack.push(node);
     }
 
     void pop() {
