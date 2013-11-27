@@ -4,36 +4,38 @@ namespace Sql { namespace Parsers {
 using namespace Exceptions;
 
 void AlterTable::parse () DEF_THROW {
-  push(ALTER_TABLE);
+    push("alter");
 
-  expect("ALTER");
-  expect("TABLE");
-  add(NODE_VALUE, expect(VALUE));
+    expect("ALTER");
+    expect("TABLE");
 
-  if (is(DOT)) {
-    consume();
-    add(NODE_VALUE, expect(VALUE));
-  }
+    add("target-arg1", expect(VALUE));
 
-  if (is("RENAME")) {
-    push(RENAME_TO);
-    consume();
-    expect("TO");
-    add(NODE_VALUE, expect(VALUE));
-    pop();
-  } else if (is("ADD")) {
-    if (is("COLUMN")) {
-      consume();
+    if (is(DOT)) {
+        consume();
+        add("target-arg2", expect(VALUE));
     }
-    expect(VALUE);
-  } else {
-    throw UnexpectedTokenException(
-          peek().value,
-          {"RENAME", "ADD"},
-          peek().line);
-  }
 
-  pop();
+    if (is("RENAME")) {
+        push("rename");
+        consume();
+        expect("TO");
+        add("column-name", expect(VALUE));
+        pop();
+    } else if (is("ADD")) {
+        consume();
+        if (is("COLUMN")) {
+            consume();
+        }
+        getParser ("COLDEF").parse ();
+    } else {
+        throw UnexpectedTokenException(
+            peek().value,
+            {"RENAME", "ADD"},
+            peek().line);
+    }
+
+    pop();
 }
 
 } }

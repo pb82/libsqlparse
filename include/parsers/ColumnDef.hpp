@@ -1,15 +1,15 @@
-#ifndef ALTERTABLE_HPP
-#define ALTERTABLE_HPP
+#ifndef COLUMNDEF_HPP
+#define COLUMNDEF_HPP
 
 #include "../BaseParser.hpp"
 
 namespace Sql { namespace Parsers {
 
-class AlterTable : public BaseParser {
+class ColumnDef : public BaseParser {
 public:
     void parse() DEF_THROW;
 };
 
 } }
 
-#endif // ALTERTABLE_HPP
+#endif // COLUMNDEF_HPP

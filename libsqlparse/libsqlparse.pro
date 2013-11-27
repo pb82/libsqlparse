@@ -9,7 +9,9 @@ SOURCES += \
     ../src/Parser.cpp \
     ../src/Tokens.cpp \
     ../src/BaseParser.cpp \
-    ../src/parsers/AlterTable.cpp
+    ../src/parsers/AlterTable.cpp \
+    ../src/parsers/ColumnDef.cpp \
+    ../src/parsers/TypeName.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -35,7 +37,9 @@ HEADERS += \
     ../include/exceptions/UnexpectedTokenException.hpp \
     ../include/parsers/AlterTable.hpp \
     ../include/exceptions/UnknonwSubsetException.h \
-    ../include/exceptions/IllegalParserStateException.h
+    ../include/exceptions/IllegalParserStateException.h \
+    ../include/parsers/ColumnDef.hpp \
+    ../include/parsers/TypeName.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

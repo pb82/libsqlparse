@@ -7,6 +7,8 @@
 
 #include "./BaseParser.hpp"
 #include "parsers/AlterTable.hpp"
+#include "parsers/ColumnDef.hpp"
+#include "parsers/TypeName.hpp"
 
 namespace Sql {
 

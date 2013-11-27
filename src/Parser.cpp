@@ -7,7 +7,7 @@ using namespace Parsers;
 
 void Parser::parse() DEF_THROW {
     registerSubsets();
-    push(&root);
+    nodeStack.push (&root);
 
     if (is("EXPLAIN")) {
       consume();
@@ -24,7 +24,9 @@ void Parser::parse() DEF_THROW {
 }
 
 void Parser::registerSubsets() const {
-  registerParser("ALTER", new AlterTable);
+  registerParser ("ALTER",      new AlterTable);
+  registerParser ("COLDEF",     new ColumnDef);
+  registerParser ("TYPENAME",   new TypeName);
 }
 
 void Parser::feed(const char *source)
@@ -81,7 +83,12 @@ void Parser::printSyntaxTreeInternal(std::ostream &stream,
     };
 
     printIndentation(indent);
-    stream << "[" << node->getCode() << ": " << node->getValue() << "]" << std::endl;
+    stream
+            << "[(" << node->getCode()
+            << ") " << node->getKey ()
+            << ": " << node->getValue()
+            << "]"  << std::endl;
+
     if (node->getChildren().size() > 0) {
         for (const Node* child: node->getChildren()) {
           printSyntaxTreeInternal(stream, child);

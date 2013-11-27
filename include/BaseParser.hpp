@@ -4,6 +4,7 @@
 #include <map>
 #include <stack>
 #include <memory>
+#include <iostream>
 
 #include "./Node.hpp"
 #include "./Tokens.hpp"
@@ -139,27 +140,30 @@ protected:
      * increase the level
      * @param type
      */
-    void add(NodeType type) {
-        nodeStack.top()->appendChild(type);
+    void add(const char *key, const SqlToken& value) {
+        nodeStack.top()->appendChild(NodeType::AST_VALUE, key, value.value);
     }
 
-    void add(NodeType type, const std::string& value) {
-        nodeStack.top()->appendChild(type, value);
-    }
+    /**
+     * @brief push push a new top level node onto the stack. Subsequent add
+     * operations will use the new top level node as reference point
+     * @param type
+     */
+    void push(const char* opcode) {
+        Node *const newTopLevel = nodeStack.top()->appendChild(
+                        AST_OPCODE,
+                        "opcode",
+                        opcode);
 
-    void add(NodeType type, const SqlToken& value) {
-        add(type, value.value);
-    }
-
-    void push(NodeType type) {
-        Node *const newTopLevel = nodeStack.top()->appendChild(type);
         nodeStack.push(newTopLevel);
     }
 
-    void push(Node *const node) {
-      nodeStack.push(node);
-    }
-
+    /**
+     * @brief pop remove the current top level node from the stack. This method
+     * must be called after a subset parser finished parsing. At the end of
+     * the parsing process the stack must contain exactly one node (the root
+     * node)
+     */
     void pop() {
       nodeStack.pop();
     }
