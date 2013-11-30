@@ -8,6 +8,9 @@ namespace Sql { namespace Parsers {
 class ColumnDef : public BaseParser {
 public:
     void parse() DEF_THROW;
+
+private:
+    bool isConstraint() const;
 };
 
 } }

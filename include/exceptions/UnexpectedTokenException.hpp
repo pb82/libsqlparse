@@ -17,6 +17,18 @@ public:
           expected(expected),
           line(line) { }
 
+    UnexpectedTokenException(
+        std::string found,
+        std::initializer_list<const char*> expected,
+        unsigned int line)
+        : std::runtime_error ("Unexpected token"),
+          found(found),
+          line(line) {
+        for (auto c: expected) {
+            this->expected.push_back (c);
+        }
+    }
+
     const std::string& getFound() const { return found; }
     const std::vector<std::string>& getExpected() const {
         return expected;

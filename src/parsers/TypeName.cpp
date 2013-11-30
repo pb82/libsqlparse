@@ -7,11 +7,11 @@ using namespace Exceptions;
 void TypeName::parse () DEF_THROW {
     push("typename");
 
-    while (is(VALUE)) {
+    while (hasNext () && is(VALUE)) {
         add ("type-name", next());
     }
 
-    if (is(LP)) {
+    if (hasNext () && is(LP)) {
         consume ();
         add ("leading", expect(NUMBER));
 

@@ -11,7 +11,10 @@ SOURCES += \
     ../src/BaseParser.cpp \
     ../src/parsers/AlterTable.cpp \
     ../src/parsers/ColumnDef.cpp \
-    ../src/parsers/TypeName.cpp
+    ../src/parsers/TypeName.cpp \
+    ../src/parsers/ColumnConstraint.cpp \
+    ../src/parsers/ConflictClause.cpp \
+    ../src/parsers/Expression.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -39,7 +42,10 @@ HEADERS += \
     ../include/exceptions/UnknonwSubsetException.h \
     ../include/exceptions/IllegalParserStateException.h \
     ../include/parsers/ColumnDef.hpp \
-    ../include/parsers/TypeName.hpp
+    ../include/parsers/TypeName.hpp \
+    ../include/parsers/ColumnConstraint.h \
+    ../include/parsers/ConflictClause.h \
+    ../include/parsers/Expression.h
 
 OTHER_FILES += \
     ../resource/sql.l

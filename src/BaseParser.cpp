@@ -25,7 +25,15 @@ std::map<TOKEN, std::string> Token::Literals = {
  * <Token stream modification methods>
  */
 
-void BaseParser::reset () { tokens.reset (); }
+void BaseParser::reset () {
+    tokens.reset ();
+    // The pointers must not be freed because they are owned
+    // by the root node. When the root node goes out of scope
+    // (along with the Parser object) they will be deleted.
+    while (!nodeStack.empty ()) {
+        nodeStack.pop ();
+    }
+}
 
 void BaseParser::feed (TOKEN code, const char *value, unsigned int line)
     throw (Exceptions::IllegalModificationException) {
@@ -51,7 +59,7 @@ bool BaseParser::is(const char *t) const DEF_THROW {
 }
 
 template <>
-bool BaseParser::_is(std::initializer_list<TOKEN> &&ts) const DEF_THROW {
+bool BaseParser::is(std::initializer_list<TOKEN> &&ts) const DEF_THROW {
     for (TOKEN t: ts) {
         if (is(t)) {
             return true;
@@ -61,7 +69,7 @@ bool BaseParser::_is(std::initializer_list<TOKEN> &&ts) const DEF_THROW {
 }
 
 template <>
-bool BaseParser::_is(std::initializer_list<const char *> &&ts) const DEF_THROW {
+bool BaseParser::is(std::initializer_list<const char *> &&ts) const DEF_THROW {
     for (const char *t: ts) {
         if (is(t)) {
             return true;
@@ -89,6 +97,18 @@ const SqlToken& BaseParser::expect(const char *t) DEF_THROW {
         throw UnexpectedTokenException(token.value, {t}, token.line);
     }
     return token;
+}
+
+template <>
+const SqlToken& BaseParser::expect(std::initializer_list<const char*> &&ts)
+    DEF_THROW {
+    const SqlToken& token = next();
+    for (const char* t: ts) {
+        if (token.value.compare (t) == 0) {
+            return token;
+        }
+    }
+    throw UnexpectedTokenException(token.value, ts, token.line);
 }
 
 void BaseParser::registerParser(const char *type, BaseParser *parser) const {

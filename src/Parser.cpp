@@ -27,6 +27,15 @@ void Parser::registerSubsets() const {
   registerParser ("ALTER",      new AlterTable);
   registerParser ("COLDEF",     new ColumnDef);
   registerParser ("TYPENAME",   new TypeName);
+  registerParser ("COLCONSTR",  new ColumnConstraint);
+  registerParser ("CONFLICT",   new ConflictClause);
+  registerParser ("EXPRESSION", new Expression);
+
+}
+
+void Parser::feed (std::stringstream &source)
+    throw (IllegalModificationException, IllegalTokenException) {
+    feed(source.str ().c_str ());
 }
 
 void Parser::feed(const char *source)
@@ -78,7 +87,7 @@ void Parser::printSyntaxTreeInternal(std::ostream &stream,
 
     auto printIndentation = [] (int num) {
         for (int i = 0; i < num; i++) {
-          std::cout << " ";
+          std::cout << "..";
         }
     };
 

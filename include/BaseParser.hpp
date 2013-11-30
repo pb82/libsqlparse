@@ -20,7 +20,7 @@
   Exceptions::UnexpectedTokenException,         \
   Exceptions::IllegalParserStateException)
 
-#define oneOf(...)  _is({__VA_ARGS__})
+#define oneOf(...)  {__VA_ARGS__}
 
 namespace Sql {
 namespace Token {
@@ -31,6 +31,20 @@ class BaseParser {
 public:
     virtual ~BaseParser() = default;
     virtual void parse() DEF_THROW = 0;
+
+    /**
+     * @brief getTokenCount return the number of tokens in the stream
+     * after a call to feed. Useful to test the tokenizer
+     * @return
+     */
+    unsigned int getTokenCount() const {
+        return tokens.getTokenCount ();
+    }
+
+    /**
+     * Clear all tokens from the stream and reset the parse index
+     */
+    void reset();
 private:
     /**
      * @brief tokens The token stream as a static variable, so all the subset
@@ -48,11 +62,6 @@ protected:
      * @brief nodeStack represents the abstract syntax tree
      */
     static std::stack<Node *> nodeStack;
-
-    /**
-     * <Token stream modification methods>
-     */
-    void reset();
 
     void feed(TOKEN code, const char* value, unsigned int line)
       throw (Exceptions::IllegalModificationException);
@@ -109,7 +118,7 @@ protected:
      * is current token of one of the types or values in a list?
      */
     template <typename T>
-    bool _is(std::initializer_list<T>&& t) const DEF_THROW;
+    bool is(std::initializer_list<T>&& t) const DEF_THROW;
 
     /**
       * expect current token to be of a certain type of value
@@ -117,6 +126,14 @@ protected:
       */
     template <typename T>
     const SqlToken& expect(T t) DEF_THROW;
+
+    /**
+      * expect current token to be member of a list of supplied
+      * values
+      * throw on unexpected token
+      */
+    template <typename T>
+    const SqlToken& expect(std::initializer_list<T>&& t) DEF_THROW;
 
     /**
      * @brief registerParser register a parser for a subset of the SQL Syntax

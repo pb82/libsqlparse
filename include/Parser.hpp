@@ -9,6 +9,9 @@
 #include "parsers/AlterTable.hpp"
 #include "parsers/ColumnDef.hpp"
 #include "parsers/TypeName.hpp"
+#include "parsers/ColumnConstraint.h"
+#include "parsers/ConflictClause.h"
+#include "parsers/Expression.h"
 
 namespace Sql {
 
@@ -27,6 +30,10 @@ public:
    * a token that is not matched by one of the rules in the Lexer
    */
   void feed(const char* source)
+    throw (Exceptions::IllegalModificationException,
+           Exceptions::IllegalTokenException);
+
+  void feed(std::stringstream &source)
     throw (Exceptions::IllegalModificationException,
            Exceptions::IllegalTokenException);
 

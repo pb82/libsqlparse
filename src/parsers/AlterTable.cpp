@@ -23,11 +23,13 @@ void AlterTable::parse () DEF_THROW {
         add("column-name", expect(VALUE));
         pop();
     } else if (is("ADD")) {
+        push("add");
         consume();
         if (is("COLUMN")) {
             consume();
         }
         getParser ("COLDEF").parse ();
+        pop();
     } else {
         throw UnexpectedTokenException(
             peek().value,

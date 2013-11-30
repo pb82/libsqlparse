@@ -77,6 +77,14 @@ public:
   void reset();
 
   /**
+   * @brief getTokenCount return the number of tokens in the list
+   * @return
+   */
+  unsigned int getTokenCount() const {
+      return tokens.size ();
+  }
+
+  /**
    * @brief operator << allow printing a Tokens instance to a stream using the
    * '<<' operator (e.g. std::cout << tokens << std::endl). A call to this
    * function will not modify the tokens collection.
