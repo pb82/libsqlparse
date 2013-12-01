@@ -1,15 +1,15 @@
-#ifndef EXPRESSION_H
-#define EXPRESSION_H
+#ifndef SELECT_H
+#define SELECT_H
 
 #include "../BaseParser.hpp"
 
 namespace Sql { namespace Parsers {
 
-class Expression : public BaseParser {
+class Select : public BaseParser {
 public:
     void parse() DEF_THROW;
 };
 
 } }
 
-#endif // EXPRESSION_H
+#endif // SELECT_H

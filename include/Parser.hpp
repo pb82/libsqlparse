@@ -9,9 +9,9 @@
 #include "parsers/AlterTable.hpp"
 #include "parsers/ColumnDef.hpp"
 #include "parsers/TypeName.hpp"
-#include "parsers/ColumnConstraint.h"
-#include "parsers/ConflictClause.h"
-#include "parsers/Expression.h"
+#include "parsers/ColumnConstraint.hpp"
+#include "parsers/ConflictClause.hpp"
+#include "parsers/Expression.hpp"
 
 namespace Sql {
 

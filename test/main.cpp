@@ -127,6 +127,28 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.reset ();
     p.feed (ss8);
     REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss9;
+    ss9 << "ALTER TABLE users ADD Id CHECK(1+1 IS NOT 3)";
+
+    p.reset ();
+    p.feed (ss9);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss10;
+    ss10 << "ALTER TABLE users ADD Id CHECK(1+1 IS 3)";
+
+    p.reset ();
+    p.feed (ss10);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss11;
+    ss11 << "ALTER TABLE users ADD Id CHECK(1+1 IS ())";
+
+    p.reset ();
+    p.feed (ss11);
+    REQUIRE_NOTHROW(p.parse ());
+
 }
 
 

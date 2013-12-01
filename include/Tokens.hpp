@@ -6,8 +6,8 @@
 #include <sstream>
 
 #include "./Token.hpp"
-#include "./exceptions/EndOfStreamException.h"
-#include "./exceptions/IllegalModificationException.h"
+#include "./exceptions/EndOfStreamException.hpp"
+#include "./exceptions/IllegalModificationException.hpp"
 
 namespace Sql {
 

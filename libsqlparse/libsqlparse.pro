@@ -14,7 +14,8 @@ SOURCES += \
     ../src/parsers/TypeName.cpp \
     ../src/parsers/ColumnConstraint.cpp \
     ../src/parsers/ConflictClause.cpp \
-    ../src/parsers/Expression.cpp
+    ../src/parsers/Expression.cpp \
+    ../src/parsers/Select.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -33,19 +34,20 @@ HEADERS += \
     ../include/Node.hpp \
     ../include/Tokens.hpp \
     ../include/Parser.hpp \
-    ../include/exceptions/EndOfStreamException.h \
-    ../include/exceptions/IllegalModificationException.h \
-    ../include/exceptions/IllegalTokenException.h \
     ../include/BaseParser.hpp \
     ../include/exceptions/UnexpectedTokenException.hpp \
     ../include/parsers/AlterTable.hpp \
-    ../include/exceptions/UnknonwSubsetException.h \
-    ../include/exceptions/IllegalParserStateException.h \
     ../include/parsers/ColumnDef.hpp \
     ../include/parsers/TypeName.hpp \
-    ../include/parsers/ColumnConstraint.h \
-    ../include/parsers/ConflictClause.h \
-    ../include/parsers/Expression.h
+    ../include/parsers/ConflictClause.hpp \
+    ../include/parsers/ColumnConstraint.hpp \
+    ../include/parsers/Expression.hpp \
+    ../include/parsers/Select.hpp \
+    ../include/exceptions/EndOfStreamException.hpp \
+    ../include/exceptions/IllegalModificationException.hpp \
+    ../include/exceptions/IllegalParserStateException.hpp \
+    ../include/exceptions/IllegalTokenException.hpp \
+    ../include/exceptions/UnknonwSubsetException.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

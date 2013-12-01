@@ -1,4 +1,4 @@
-#include "../../include/parsers/ColumnConstraint.h"
+#include "../../include/parsers/ColumnConstraint.hpp"
 
 namespace Sql { namespace Parsers {
 using namespace Exceptions;

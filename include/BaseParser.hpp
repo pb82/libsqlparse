@@ -8,10 +8,10 @@
 
 #include "./Node.hpp"
 #include "./Tokens.hpp"
-#include "./exceptions/IllegalTokenException.h"
+#include "./exceptions/IllegalTokenException.hpp"
 #include "./exceptions/UnexpectedTokenException.hpp"
-#include "./exceptions/UnknonwSubsetException.h"
-#include "./exceptions/IllegalParserStateException.h"
+#include "./exceptions/UnknonwSubsetException.hpp"
+#include "./exceptions/IllegalParserStateException.hpp"
 
 #define DEF_THROW throw (                       \
   Exceptions::EndOfStreamException,             \

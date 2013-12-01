@@ -1,4 +1,4 @@
-#include "../../include/parsers/ConflictClause.h"
+#include "../../include/parsers/ConflictClause.hpp"
 
 namespace Sql { namespace Parsers {
 using namespace Exceptions;
