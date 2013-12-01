@@ -11,6 +11,7 @@ void Select::parse () DEF_THROW {
     }
 
     do {
+        if (is(COMMA)) consume();
         parseResultCol ();
     } while (hasNext () && is(COMMA));
 

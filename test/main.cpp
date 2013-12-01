@@ -184,6 +184,61 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.feed (ss16);
     REQUIRE_NOTHROW(p.parse ());
 
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(users.id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(db.users.id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun())");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(DISTINCT 1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(DISTINCT 1,2))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(1,2,3))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(db))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(db.users))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun(db.users.name))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun((1+1)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun_ction((1+1)+(SELECT *)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(fun_ction((1+1)+(SELECT *) + 5))");
+    REQUIRE_NOTHROW(p.parse ());
 }
 
 
