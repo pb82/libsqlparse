@@ -149,6 +149,41 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.feed (ss11);
     REQUIRE_NOTHROW(p.parse ());
 
+    std::stringstream ss12;
+    ss12 << "SELECT *";
+
+    p.reset ();
+    p.feed (ss12);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss13;
+    ss13 << "SELECT DISTINCT *";
+
+    p.reset ();
+    p.feed (ss13);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss14;
+    ss14 << "SELECT ALL *";
+
+    p.reset ();
+    p.feed (ss14);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss15;
+    ss15 << "SELECT users.*";
+
+    p.reset ();
+    p.feed (ss15);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss16;
+    ss16 << "SELECT DISTINCT users.*";
+
+    p.reset ();
+    p.feed (ss16);
+    REQUIRE_NOTHROW(p.parse ());
+
 }
 
 

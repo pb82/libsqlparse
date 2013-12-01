@@ -43,6 +43,16 @@ public:
   }
 
   /**
+   * @brief has check if at least num items are left on the stream
+   * @param num the minimum number of tokens that have to be left
+   * on the stream for this method to return true
+   * @return true if enough tokens left, false otherwise
+   */
+  inline bool has(unsigned int num) const {
+      return index + num < tokens.size();
+  }
+
+  /**
    * @brief peek return the current token but do not
    * increment the stream
    * @return a reference to the current token in the stream
@@ -50,6 +60,20 @@ public:
   inline const SqlToken& peek() const throw (Exceptions::EndOfStreamException) {
       checkStream();
       return tokens.at(index);
+  }
+
+  /**
+   * @brief peek return the token on the given index without
+   * increment the stream
+   * @return a reference to the selected token
+   */
+  inline const SqlToken& peek(unsigned int pos)
+  const throw (Exceptions::EndOfStreamException) {
+      if (index + pos >= tokens.size()) {
+        throw Exceptions::EndOfStreamException();
+      }
+
+      return tokens.at(index + pos);
   }
 
   /**

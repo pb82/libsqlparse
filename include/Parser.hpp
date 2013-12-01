@@ -12,6 +12,7 @@
 #include "parsers/ColumnConstraint.hpp"
 #include "parsers/ConflictClause.hpp"
 #include "parsers/Expression.hpp"
+#include "parsers/Select.hpp"
 
 namespace Sql {
 

@@ -78,6 +78,16 @@ bool BaseParser::is(std::initializer_list<const char *> &&ts) const DEF_THROW {
     return false;
 }
 
+template<>
+bool BaseParser::is(unsigned int pos, const char *t) const DEF_THROW {
+    return tokens.peek (pos).value.compare (t) == 0;
+}
+
+template<>
+bool BaseParser::is(unsigned int pos, TOKEN t) const DEF_THROW {
+    return tokens.peek (pos).code == t;
+}
+
 template <>
 const SqlToken& BaseParser::expect(TOKEN t) DEF_THROW {
     const SqlToken& token = next();

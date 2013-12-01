@@ -105,6 +105,16 @@ protected:
     }
 
     /**
+     * @brief has returns true if there are at least num tokens left in the
+     * stream
+     * @return true if enough tokens are left, false otherwise
+     */
+    inline bool has(unsigned int num)
+    const throw (Exceptions::EndOfStreamException) {
+        return tokens.has (num);
+    }
+
+    /**
       * <Token stream query methods>
       */
 
@@ -119,6 +129,13 @@ protected:
      */
     template <typename T>
     bool is(std::initializer_list<T>&& t) const DEF_THROW;
+
+    /**
+     * is the token at the given index of the stream of the supplied
+     * value?
+     */
+    template <typename T>
+    bool is(unsigned int pos, T t) const DEF_THROW;
 
     /**
       * expect current token to be of a certain type of value

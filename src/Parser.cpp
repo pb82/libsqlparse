@@ -30,7 +30,7 @@ void Parser::registerSubsets() const {
   registerParser ("COLCONSTR",  new ColumnConstraint);
   registerParser ("CONFLICT",   new ConflictClause);
   registerParser ("EXPRESSION", new Expression);
-
+  registerParser ("SELECT",     new Select);
 }
 
 void Parser::feed (std::stringstream &source)

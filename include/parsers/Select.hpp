@@ -8,6 +8,8 @@ namespace Sql { namespace Parsers {
 class Select : public BaseParser {
 public:
     void parse() DEF_THROW;
+private:
+    void parseResultCol() DEF_THROW;
 };
 
 } }
