@@ -18,6 +18,7 @@ void Parser::parse() DEF_THROW {
     }
 
     getParser(peek().value.c_str()).parse();
+
     if (1 != BaseParser::nodeStack.size()) {
       throw IllegalParserStateException();
     }

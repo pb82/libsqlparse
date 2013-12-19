@@ -239,6 +239,90 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.reset ();
     p.feed ("ALTER TABLE users ADD Id CHECK(fun_ction((1+1)+(SELECT *) + 5))");
     REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST (1 as INTEGER))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ((1 - 2)+(2*5) as INTEGER))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ((1 - 2)+(2*5) as number(8)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ((1 - 2)+(2*5) as number(8,0)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ('-1' as number(8,0)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST (-1 as number(8,0)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST (~1 as number(8,0)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(EXISTS(SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(NOT EXISTS(SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE WHEN 1 THEN '1' END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE WHEN 1 THEN '1' WHEN 2 THEN '2' END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE WHEN 1 THEN '1' WHEN 2 THEN '2' ELSE (1+1) END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE WHEN 1 THEN '1' ELSE (1+1) END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE :1 WHEN 1 THEN '1' END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE 1 WHEN 1 THEN '1' WHEN 2 THEN '2' END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE '1' WHEN 1 THEN '1' WHEN 2 THEN '2' ELSE (1+1) END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CASE (SELECT *) WHEN 1 THEN '1' ELSE (1+1) END)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(RAISE(IGNORE))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(RAISE(ROLLBACK,'test'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(RAISE(ABORT,'test'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(RAISE(FAIL,'test'))");
+    REQUIRE_NOTHROW(p.parse ());
 }
 
 

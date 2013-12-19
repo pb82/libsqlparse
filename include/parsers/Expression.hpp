@@ -14,6 +14,10 @@ private:
     void parseExpressionSuffix() DEF_THROW;
     void parseCombinator() DEF_THROW;
     void parseExpressionList() DEF_THROW;
+    void parseWhenList() DEF_THROW;
+    void parseBetween() DEF_THROW;
+    void parseComparison() DEF_THROW;
+    void parseInStatement() DEF_THROW;
 
     bool isLiteral() const;
     bool isCombinator() const;

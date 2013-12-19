@@ -37,7 +37,7 @@ void Expression::parseExpressionCore () DEF_THROW {
         add("paren", next ());
         if (is("SELECT")) {
             getParser ("SELECT").parse ();
-            add("paren", expect(RP));
+            expect(RP);
             parseExpressionSuffix ();
             return;
         }
@@ -65,7 +65,7 @@ void Expression::parseExpressionCore () DEF_THROW {
             add("column-name", next());
             parseExpressionSuffix ();
             return;
-        } else if (has(3) && is(1, DOT) && is (2, VALUE)) {
+        } else if (has(2) && is(1, DOT) && is (2, VALUE)) {
             add("table-name", next());
             expect(DOT);
             add("column-name", next());
@@ -73,25 +73,25 @@ void Expression::parseExpressionCore () DEF_THROW {
             return;
         } else if (has(1) && is(1, LP)) {
             add("function-name", next());
-            add("paren", next());
+            consume();
             if (is(RP)) {
-                add("paren", next());
+                consume ();
                 parseExpressionSuffix ();
                 return;
             } else if (is(STAR)) {
                 add("star", next ());
-                add("paren", expect(RP));
+                expect(RP);
                 parseExpressionSuffix ();
                 return;
             } else if (is("DISTINCT")) {
                 add ("modifier", next());
                 parseExpressionList ();
-                add("paren", expect(RP));
+                expect(RP);
                 parseExpressionSuffix ();
                 return;
             } else {
                 parseExpressionList ();
-                add("paren", expect(RP));
+                expect(RP);
                 parseExpressionSuffix ();
                 return;
             }
@@ -100,7 +100,72 @@ void Expression::parseExpressionCore () DEF_THROW {
             parseExpressionSuffix ();
             return;
         }
+    } else if (is("CAST")) {
+        consume ();
+        push("cast");
+        expect(LP);
+        parseExpressionPrefix ();
+        expect("AS");
+        getParser ("TYPENAME").parse ();
+        expect(RP);
+        pop();
+        parseExpressionSuffix ();
         return;
+    } else if (is(oneOf("NOT", "EXISTS"))) {
+        const SqlToken& token = expect(oneOf("NOT", "EXISTS"));
+        push ("exists");
+        if (token.value.compare ("NOT") == 0) {
+            add ("modifier", token);
+            expect ("EXISTS");
+        }
+
+        expect("(");
+        getParser ("SELECT").parse ();
+        expect(")");
+        pop();
+
+        parseExpressionSuffix ();
+        return;
+    } else if (is("CASE")) {
+        consume();
+        push("case");
+
+        if (!is("WHEN")) {
+            parseExpressionPrefix ();
+        }
+
+        parseWhenList ();
+
+        const SqlToken& token = expect(oneOf("ELSE","END"));
+        if (token.value.compare ("ELSE") == 0) {
+            parseExpressionPrefix ();
+            expect ("END");
+        }
+
+        pop ();
+
+        parseExpressionSuffix ();
+        return;
+    } else if (is("RAISE")) {
+        consume();
+        push("raise");
+
+        expect(LP);
+        const SqlToken& token = expect(
+                    oneOf("IGNORE", "ROLLBACK", "ABORT", "FAIL"));
+
+        if (token.value.compare ("IGNORE") == 0) {
+            add("action", token);
+        } else {
+            add("action", token);
+            expect(COMMA);
+            add("error-msg", expect(STRING));
+        }
+
+        expect(RP);
+
+        pop();
+        parseExpressionSuffix ();
     }
 }
 
@@ -109,15 +174,152 @@ void Expression::parseExpressionSuffix () DEF_THROW {
         parseCombinator ();
         parseExpressionPrefix ();
     }
+
+    if (is(oneOf("ISNULL", "NOTNULL"))) {
+        add("postfix", next());
+        return;
+    }
+
+    else if (is("IS")) {
+        add("compare-to", next());
+        if (is ("NOT")) {
+            add("modifier", next());
+        }
+        parseExpressionPrefix ();
+        return;
+    }
+
+    else if (is("BETWEEN")) {
+        parseBetween ();
+        return;
+    }
+
+    else if (is("IN")) {
+        parseInStatement ();
+        return;
+    }
+
+    else if (is(oneOf("LIKE", "GLOB", "REGEXP", "MATCH"))) {
+        parseComparison ();
+        return;
+    }
+
+    else if (is("COLLATE")) {
+        add("collate", expect(VALUE));
+    }
+
+    else if (is("NOT")) {
+        add("postfix", next());
+        if (is("NULL")) {
+            add("comparator", next());
+            return;
+        }
+
+        else if (is("BETWEEN")) {
+            parseBetween ();
+            return;
+        }
+
+        else if (is(oneOf("LIKE", "GLOB", "REGEXP", "MATCH"))) {
+            parseComparison ();
+            return;
+        }
+
+        else if (is("IN")) {
+            parseInStatement ();
+            return;
+        }
+
+        else {
+            if (hasNext ()) {
+                throw UnexpectedTokenException(peek().value, {
+                                                   "NULL",
+                                                   "BETWEEN",
+                                                   "LIKE",
+                                                   "GLOB",
+                                                   "REGEXP",
+                                                   "MATCH"}, peek().line);
+            } else {
+                throw EndOfStreamException();
+            }
+        }
+    }
+}
+
+void Expression::parseInStatement () DEF_THROW {
+    add("in", expect("IN"));
+    if (is(LP)) {
+        consume ();
+        if (is(RP)) {
+            consume();
+            return;
+        }
+
+        else if (is("SELECT")) {
+            getParser ("SELECT").parse ();
+            expect(RP);
+            return;
+        }
+
+        else {
+            parseExpressionList ();
+            expect(RP);
+            return;
+        }
+    } else {
+        if (has(3) && is(1, STRING) && is(2, DOT) && is(3, STRING)) {
+            add("database-name", next());
+            consume ();
+            add("table-name", next());
+            return;
+        } else {
+            add("table-name", expect(STRING));
+            return;
+        }
+    }
+}
+
+void Expression::parseComparison () DEF_THROW {
+    add("comparator", expect(oneOf("LIKE", "GLOB", "REGEXP", "MATCH")));
+    parseExpressionPrefix ();
+    if (is("ESCAPE")) {
+        add ("escape", next());
+        parseExpressionPrefix ();
+    }
+    return;
+}
+
+void Expression::parseBetween () DEF_THROW {
+    add("between", expect("BETWEEN"));
+    parseExpressionPrefix ();
+    add("and", expect("AND"));
+    parseExpressionPrefix ();
+    return;
+}
+
+void Expression::parseWhenList () DEF_THROW {
+    do {
+        push("when");
+        expect("WHEN");
+        parseExpressionPrefix ();
+        expect("THEN");
+        parseExpressionPrefix ();
+        pop ();
+    } while (is("WHEN"));
 }
 
 void Expression::parseExpressionList () DEF_THROW {
-    do {
-        if (is(COMMA)) consume ();
-        push("parameter");
+    while (hasNext ()) {
+        push ("parameter");
         parseExpressionPrefix ();
-        pop();
-    } while (is(COMMA));
+        pop ();
+        if (hasNext () && is(COMMA)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
+    }
 }
 
 void Expression::parseCombinator () DEF_THROW {
