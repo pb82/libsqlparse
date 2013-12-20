@@ -27,13 +27,10 @@ void Expression::parseExpressionPrefix () DEF_THROW {
 void Expression::parseExpressionCore () DEF_THROW {
     if (isLiteral ()) {
         add("literal", next ());
-        if (isCombinator ()) {
-            parseCombinator ();
-            parseExpressionPrefix ();
-        }
         parseExpressionSuffix ();
         return;
     } else if (is(LP)) {
+        between.push (false);
         add("paren", next ());
         if (is("SELECT")) {
             getParser ("SELECT").parse ();
@@ -49,6 +46,8 @@ void Expression::parseExpressionCore () DEF_THROW {
         }
 
         add("paren", expect(RP));
+        between.pop ();
+
         parseExpressionSuffix ();
         return;
     } else if (is(PARAMETER)) {
@@ -205,6 +204,7 @@ void Expression::parseExpressionSuffix () DEF_THROW {
     }
 
     else if (is("COLLATE")) {
+        consume();
         add("collate", expect(VALUE));
     }
 
@@ -267,13 +267,13 @@ void Expression::parseInStatement () DEF_THROW {
             return;
         }
     } else {
-        if (has(3) && is(1, STRING) && is(2, DOT) && is(3, STRING)) {
+        if (has(2) && is(1, DOT) && is(2, VALUE)) {
             add("database-name", next());
             consume ();
             add("table-name", next());
             return;
         } else {
-            add("table-name", expect(STRING));
+            add("table-name", expect(VALUE));
             return;
         }
     }
@@ -290,10 +290,12 @@ void Expression::parseComparison () DEF_THROW {
 }
 
 void Expression::parseBetween () DEF_THROW {
+    between.push (true);
     add("between", expect("BETWEEN"));
     parseExpressionPrefix ();
     add("and", expect("AND"));
     parseExpressionPrefix ();
+    between.pop ();
     return;
 }
 
@@ -348,6 +350,14 @@ bool Expression::isLiteral () const {
         is("CURRENT_TIMESTAMP");
 }
 
+bool Expression::inBetween () const {
+    if (between.size () == 0) {
+        return false;
+    }
+
+    return between.top ();
+}
+
 bool Expression::isCombinator () const {
     if (!hasNext ()) {
         return false;
@@ -375,14 +385,15 @@ bool Expression::isCombinator () const {
     if (is (
             oneOf(
                 "IS",
-                "IN",
-                "LIKE",
-                "GLOB",
-                "MATCH",
-                "REGEXP",
-                "AND",
+                // 'IN' should only ever be used in the form
+                // 'Id IN (1,2,3) right?'
+                /*"IN",*/
                 "OR"
                     ))) return true;
+
+    if (!inBetween () && is("AND")) {
+        return true;
+    }
 
     return false;
 }

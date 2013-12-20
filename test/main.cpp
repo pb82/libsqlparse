@@ -325,6 +325,355 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     REQUIRE_NOTHROW(p.parse ());
 }
 
+TEST_CASE( "base/expression", "Sqlite Expressions" ) {
+
+    Parser p;
+    p.feed ("ALTER TABLE users ADD Id CHECK(1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1.5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(-1.5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(-1.5E+9)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK('a')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(x'blob')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(NULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CURRENT_DATE)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CURRENT_TIME)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CURRENT_TIMESTAMP)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(db.users.id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(users.id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(-1*1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(+5*5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(~(1+1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(NOT CURRENT_DATE)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(5 || '5')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 / 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 >> 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 << 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 | 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 & 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 < 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 > 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 <= 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 >= 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 > 2 || 2 < 5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 > 1 || :2 < :3)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 = 1 || :2 < :3)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 == 1 || :2 < :3)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 != 1 || :2 < :3)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 <> 1 || :2 < :3)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 IS :2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 IS NOT NULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(name LIKE 'test')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(name NOT LIKE 'test')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(type glob 1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(type match 1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(type regexp 1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 or 2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(:1 and :2)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK((1+1)*((1*:1) && 4 >> 1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun())");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun(*))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun(1,2,3))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun('a','b','c'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun(distinct :1,2,3))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun() ISNULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun(*) NOTNULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(check_fun(1,2,3) NOT NULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK((1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(((1)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(((1+:1)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST (id AS INTEGER))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST (1 AS STRING))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ('1' AS INTEGER)))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(name COLLATE GERMAN)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 LIKE :1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT LIKE :1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 LIKE :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT LIKE :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT GLOB :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT REGEXP :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT MATCH :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 GLOB :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 REGEXP :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 MATCH :1 ESCAPE '1')");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 ISNULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOTNULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 NOT NULL)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 is :1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(1 is not :1)");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id between 1 and 10000)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id between (1 and 2) and 10000)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id between (1 and :1 between 2 and 4) and 10000)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id between (:1 between 1 and 2) and ('2' between 'a' and 'z'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in db)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in db.users)");
+    REQUIRE_NOTHROW(p.parse ());
+
+}
 
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));

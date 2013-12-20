@@ -126,6 +126,7 @@
 '(?:[^']|'')*'                      return STRING;
 [xX]'(?:[^']|'')*'                  return BLOB;
 ":"[1-9][0-9]*                      return PARAMETER;
+
 [A-Za-z][A-Za-z0-9_$]*              return VALUE;
 
 "("                                 return LP;
@@ -151,17 +152,17 @@
 "||"                                return CONCAT;
 "."                                 return DOT;
 
-[-]?[0-9]+                          |
-[-]?[0-9]+"."[0-9]*                 |
-[-]?"."[0-9]*                       return NUMBER;
+[0-9]+                         |
+[0-9]+"."[0-9]*                |
+"."[0-9]*                      return NUMBER;
 
-[-]?[0-9]+[eE][+-]?[0-9]+           |
-[-]?[0-9]+"."[0-9]*[eE][+-]?[0-9]+  |
-[-]?"."[0-9]*[eE][+-]?[0-9]+        return NUMBER;
+[0-9]+[E][+-]?[0-9]+           |
+[0-9]+"."[0-9]*[E][+-]?[0-9]+  |
+"."[0-9]*[E][+-]?[0-9]+        return NUMBER;
 
-\n                                  return NEWLINE;
-[ \t]+                              /* Ignore whitespace */
+\n                             return NEWLINE;
+[ \t]+                         /* Ignore whitespace */
 
-.                                   return ERROR;
+.                              return ERROR;
 
 %%

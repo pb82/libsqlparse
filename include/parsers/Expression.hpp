@@ -21,6 +21,20 @@ private:
 
     bool isLiteral() const;
     bool isCombinator() const;
+    bool inBetween() const;
+
+    /** super bad hack :(
+      * consider:
+      * '1 AND 2' is a (formally) valid expression
+      * How should this be parsed:
+      * 'BETWEEN 1 AND 2' ?
+      * When parsing a between-statement we don't
+      * treat 'AND' as a binary operator but as
+      * part of the statement.
+      * TODO: find a proper solution for this
+      */
+
+    std::stack<bool> between;
 };
 
 } }
