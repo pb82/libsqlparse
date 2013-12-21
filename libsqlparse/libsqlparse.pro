@@ -15,7 +15,8 @@ SOURCES += \
     ../src/parsers/ColumnConstraint.cpp \
     ../src/parsers/ConflictClause.cpp \
     ../src/parsers/Expression.cpp \
-    ../src/parsers/Select.cpp
+    ../src/parsers/Select.cpp \
+    ../src/parsers/ForeignKeyClause.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -47,7 +48,8 @@ HEADERS += \
     ../include/exceptions/IllegalModificationException.hpp \
     ../include/exceptions/IllegalParserStateException.hpp \
     ../include/exceptions/IllegalTokenException.hpp \
-    ../include/exceptions/UnknonwSubsetException.hpp
+    ../include/exceptions/UnknonwSubsetException.hpp \
+    ../include/parsers/ForeignKeyClause.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

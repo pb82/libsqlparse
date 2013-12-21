@@ -121,6 +121,17 @@ const SqlToken& BaseParser::expect(std::initializer_list<const char*> &&ts)
     throw UnexpectedTokenException(token.value, ts, token.line);
 }
 
+const SqlToken& BaseParser::expectName() DEF_THROW {
+    const SqlToken& token = next();
+    if (token.code == STRING    ||
+        token.code == VALUE     ||
+        token.code == IDENTIFIER) {
+        return token;
+    }
+
+    throw UnexpectedTokenException(token.value, {"<<NAME>>"}, token.line);
+}
+
 void BaseParser::registerParser(const char *type, BaseParser *parser) const {
   parsers[type] = std::unique_ptr<BaseParser>(parser);
 }
@@ -131,6 +142,29 @@ throw (UnknownSubsetException, EndOfStreamException) {
     throw UnknownSubsetException(type, peek().line);
   }
   return *(parsers[type]);
+}
+
+bool BaseParser::isLiteral () const {
+    if (!hasNext ()) {
+        return false;
+    }
+
+    return
+        is(NUMBER)          ||
+        is(STRING)          ||
+        is(BLOB)            ||
+        is("NULL")          ||
+        is("CURRENT_DATE")  ||
+        is("CURRENT_TIME")  ||
+        is("CURRENT_TIMESTAMP");
+}
+
+bool BaseParser::isName () const {
+    if (!hasNext ()) {
+        return false;
+    }
+
+    return is(STRING) || is(VALUE) || is(IDENTIFIER);
 }
 
 }

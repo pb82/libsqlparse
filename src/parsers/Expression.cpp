@@ -335,21 +335,6 @@ void Expression::parseCombinator () DEF_THROW {
     }
 }
 
-bool Expression::isLiteral () const {
-    if (!hasNext ()) {
-        return false;
-    }
-
-    return
-        is(NUMBER)          ||
-        is(STRING)          ||
-        is(BLOB)            ||
-        is("NULL")          ||
-        is("CURRENT_DATE")  ||
-        is("CURRENT_TIME")  ||
-        is("CURRENT_TIMESTAMP");
-}
-
 bool Expression::inBetween () const {
     if (between.size () == 0) {
         return false;

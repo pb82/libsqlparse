@@ -19,7 +19,6 @@ private:
     void parseComparison() DEF_THROW;
     void parseInStatement() DEF_THROW;
 
-    bool isLiteral() const;
     bool isCombinator() const;
     bool inBetween() const;
 

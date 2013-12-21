@@ -9,11 +9,12 @@ void AlterTable::parse () DEF_THROW {
     expect("ALTER");
     expect("TABLE");
 
-    add("target-arg1", expect(VALUE));
-
-    if (is(DOT)) {
+    if (has(2) && is(1, DOT) && is (2, VALUE)) {
+        add("database-name", expect(VALUE));
         consume();
-        add("target-arg2", expect(VALUE));
+        add("table-name", expect(VALUE));
+    } else {
+        add("table-name", expect(VALUE));
     }
 
     if (is("RENAME")) {

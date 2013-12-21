@@ -44,7 +44,7 @@ public:
     /**
      * Clear all tokens from the stream and reset the parse index
      */
-    void reset();
+    virtual void reset();
 private:
     /**
      * @brief tokens The token stream as a static variable, so all the subset
@@ -153,6 +153,12 @@ protected:
     const SqlToken& expect(std::initializer_list<T>&& t) DEF_THROW;
 
     /**
+      * expect the current token to be either a string, value or
+      * identifier (something that can be interpreted as a name).
+      */
+    const SqlToken& expectName() DEF_THROW;
+
+    /**
      * @brief registerParser register a parser for a subset of the SQL Syntax
      * @param type Keyword that invokes this parser ('ALTER')
      * @param parser Parser instance
@@ -201,6 +207,9 @@ protected:
     void pop() {
       nodeStack.pop();
     }
+
+    bool isLiteral() const;
+    bool isName() const;
 };
 
 }

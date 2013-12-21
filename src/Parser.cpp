@@ -72,6 +72,11 @@ void Parser::feed(const char *source)
   }
 }
 
+void Parser::reset () {
+    BaseParser::reset ();
+    root = Node();
+}
+
 void Parser::printTokensToStream(std::ostream &stream) const {
     stream << getTokens ();
 }

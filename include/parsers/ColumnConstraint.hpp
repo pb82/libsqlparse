@@ -8,6 +8,9 @@ namespace Sql { namespace Parsers {
 class ColumnConstraint : public BaseParser {
 public:
     void parse() DEF_THROW;
+
+private:
+    bool isSignedNumber() const;
 };
 
 } }

@@ -19,6 +19,7 @@ namespace Sql {
 class Parser : public BaseParser {
 public:
   void parse() DEF_THROW;
+  void reset();
 
   static std::map<std::string, std::unique_ptr<BaseParser>> parsers;
 

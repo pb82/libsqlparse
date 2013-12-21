@@ -8,7 +8,7 @@ void ColumnConstraint::parse () DEF_THROW {
 
     if(is("CONSTRAINT")) {
         consume ();
-        add("constraint-name", expect(VALUE));
+        add("constraint-name", expectName ());
     }
 
     if (is("PRIMARY")) {
@@ -39,12 +39,68 @@ void ColumnConstraint::parse () DEF_THROW {
 
     else if (is("CHECK")) {
         add("constraint-type", expect(KEYWORD));
-        expect("(");
+        expect(LP);
         getParser ("EXPRESSION").parse ();
-        expect(")");
+        expect(RP);
+    }
+
+    else if (is("DEFAULT")) {
+        add("constraint-type", expect(KEYWORD));
+        if (isLiteral ()) {
+            add("literal", next ());
+        } else if (isSignedNumber ()) {
+            if (is(PLUS) || is(MINUS)) {
+                add("modifier", next());
+            }
+            add ("number", expect(NUMBER));
+        } else {
+            expect(LP);
+            getParser ("EXPRESSION").parse ();
+            expect(RP);
+        }
+    }
+
+    else if (is("COLLATE")) {
+        add("constraint-type", expect(KEYWORD));
+        expect(VALUE);
+    }
+
+    else if (is("REFERENCES")) {
+
+    }
+
+    else {
+        if (hasNext ()) {
+            throw UnexpectedTokenException(peek().value, {
+                                               "PRIMARY",
+                                               "NOT",
+                                               "UNIQUE",
+                                               "CHECK",
+                                               "DEFAULT",
+                                               "REFERENCES",
+                                               "COLLATE"}, peek().line);
+        } else {
+            throw EndOfStreamException();
+        }
     }
 
     pop();
+}
+
+bool ColumnConstraint::isSignedNumber () const {
+    if (!hasNext ()) {
+        return false;
+    }
+
+    if (is(NUMBER)) {
+        return true;
+    }
+
+    if (has(1) && (is(PLUS) || is(MINUS)) && is(1, NUMBER)) {
+        return true;
+    }
+
+    return false;
 }
 
 } }

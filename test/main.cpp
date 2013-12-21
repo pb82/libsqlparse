@@ -673,7 +673,138 @@ TEST_CASE( "base/expression", "Sqlite Expressions" ) {
     p.feed ("ALTER TABLE users ADD Id CHECK(Id in db.users)");
     REQUIRE_NOTHROW(p.parse ());
 
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in (SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in ())");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in (1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in (1,2))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in (1,2,3))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id in (1,:2,'3',x'4'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id not in ())");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id NOT in (1))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id Not in (1,2))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id noT in (1,2,3))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(Id NoT in (1,:2,'3',x'4'))");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK((SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(exists (SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(not exists (SELECT *))");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(case when 1 then '1' end)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(case get_val(:1 + 1) when 1 then '1' end)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(case :1 when 1 then '1' end)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(case :1 when 1 then '1' else '2' end)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD Id CHECK(case :1 when +1 then '1' WHEN -1 THEN '-1' else '2' end)");
+    REQUIRE_NOTHROW(p.parse ());
+
 }
+
+TEST_CASE( "statements/alter", "Alter statements" ) {
+    Parser p;
+    p.feed ("ALTER TABLE users RENAME TO user");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE db.users RENAME TO user");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE db.users ADD Id Integer");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE db.users ADD COLUMN Id Integer");
+    REQUIRE_NOTHROW(p.parse ());
+
+}
+
+TEST_CASE( "constraints/column", "Column constraints" ) {
+    Parser p;
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer PRIMARY KEY");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT PK PRIMARY KEY");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT 'PK' PRIMARY KEY");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT [PK] PRIMARY KEY");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT `PK` PRIMARY KEY");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT `PK` PRIMARY KEY NOT NULL UNIQUE");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.printSyntaxTree (std::cout);
+}
+
 
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));
