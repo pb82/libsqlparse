@@ -33,7 +33,7 @@ void Parser::registerSubsets() const {
   registerParser ("EXPRESSION", new Expression);
   registerParser ("SELECT",     new Select);
   registerParser ("REFERENCES", new ForeignKeyClause);
-
+  registerParser ("ANALYZE",    new Analyze);
 }
 
 void Parser::feed (std::stringstream &source)

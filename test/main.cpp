@@ -904,9 +904,25 @@ TEST_CASE( "constraints/column", "Column constraints" ) {
     p.reset ();
     p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE NO ACTION MATCH id ON UPDATE SET NULL MATCH name NOT DEFERRABLE INITIALLY DEFERRED");
     REQUIRE_NOTHROW(p.parse ());
+}
 
+
+
+TEST_CASE( "statements/analyze", "Analyze statements" ) {
+    Parser p;
+    p.feed ("ANALYZE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ANALYZE sqlite_master");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ANALYZE db.sqlite_master");
+    REQUIRE_NOTHROW(p.parse ());
 
     p.printSyntaxTree (std::cout);
+
 }
 
 
