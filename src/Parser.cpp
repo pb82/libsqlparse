@@ -36,6 +36,8 @@ void Parser::registerSubsets() const {
   registerParser ("ANALYZE",    new Analyze);
   registerParser ("ATTACH",     new Attach);
   registerParser ("BEGIN",      new Begin);
+  registerParser ("COMMIT",     new Commit);
+  registerParser ("END",        new Commit);
 }
 
 void Parser::feed (std::stringstream &source)

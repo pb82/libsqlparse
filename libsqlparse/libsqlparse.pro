@@ -19,7 +19,8 @@ SOURCES += \
     ../src/parsers/ForeignKeyClause.cpp \
     ../src/parsers/Analyze.cpp \
     ../src/parsers/Attach.cpp \
-    ../src/parsers/Begin.cpp
+    ../src/parsers/Begin.cpp \
+    ../src/parsers/Commit.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -55,7 +56,8 @@ HEADERS += \
     ../include/parsers/ForeignKeyClause.hpp \
     ../include/parsers/Analyze.hpp \
     ../include/parsers/Attach.hpp \
-    ../include/parsers/Begin.hpp
+    ../include/parsers/Begin.hpp \
+    ../include/parsers/Commit.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

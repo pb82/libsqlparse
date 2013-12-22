@@ -955,9 +955,24 @@ TEST_CASE( "statements/begin", "Begin statements" ) {
     p.reset ();
     p.feed ("BEGIN EXCLUSIVE TRANSACTION");
     REQUIRE_NOTHROW(p.parse ());
+}
 
-    p.printSyntaxTree (std::cout);
+TEST_CASE( "statements/commit", "Commit statements" ) {
+    Parser p;
+    p.feed ("COMMIT");
+    REQUIRE_NOTHROW(p.parse ());
 
+    p.reset ();
+    p.feed ("COMMIT TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("END");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("END TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
 }
 
 

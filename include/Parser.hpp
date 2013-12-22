@@ -17,6 +17,7 @@
 #include "parsers/Analyze.hpp"
 #include "parsers/Attach.hpp"
 #include "parsers/Begin.hpp"
+#include "parsers/Commit.hpp"
 
 namespace Sql {
 
