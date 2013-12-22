@@ -17,7 +17,8 @@ SOURCES += \
     ../src/parsers/Expression.cpp \
     ../src/parsers/Select.cpp \
     ../src/parsers/ForeignKeyClause.cpp \
-    ../src/parsers/Analyze.cpp
+    ../src/parsers/Analyze.cpp \
+    ../src/parsers/Attach.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -51,7 +52,8 @@ HEADERS += \
     ../include/exceptions/IllegalTokenException.hpp \
     ../include/exceptions/UnknonwSubsetException.hpp \
     ../include/parsers/ForeignKeyClause.hpp \
-    ../include/parsers/Analyze.hpp
+    ../include/parsers/Analyze.hpp \
+    ../include/parsers/Attach.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

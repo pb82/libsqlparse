@@ -906,8 +906,6 @@ TEST_CASE( "constraints/column", "Column constraints" ) {
     REQUIRE_NOTHROW(p.parse ());
 }
 
-
-
 TEST_CASE( "statements/analyze", "Analyze statements" ) {
     Parser p;
     p.feed ("ANALYZE");
@@ -919,6 +917,21 @@ TEST_CASE( "statements/analyze", "Analyze statements" ) {
 
     p.reset ();
     p.feed ("ANALYZE db.sqlite_master");
+    REQUIRE_NOTHROW(p.parse ());
+}
+
+
+TEST_CASE( "statements/attach", "Attach statements" ) {
+    Parser p;
+    p.feed ("ATTACH 'test.db' AS test");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ATTACH DATABASE 'test.db' AS test");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ATTACH DATABASE 'test' + '.' + 'db' AS [test]");
     REQUIRE_NOTHROW(p.parse ());
 
     p.printSyntaxTree (std::cout);

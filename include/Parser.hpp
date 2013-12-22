@@ -15,6 +15,7 @@
 #include "parsers/Select.hpp"
 #include "parsers/ForeignKeyClause.hpp"
 #include "parsers/Analyze.hpp"
+#include "parsers/Attach.hpp"
 
 namespace Sql {
 
