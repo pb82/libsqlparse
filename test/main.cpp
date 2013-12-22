@@ -976,6 +976,28 @@ TEST_CASE( "statements/commit", "Commit statements" ) {
 }
 
 
+TEST_CASE( "statements/rollback", "Rollback statements" ) {
+    Parser p;
+    p.feed ("ROLLBACK");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ROLLBACK TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ROLLBACK TRANSACTION TO sp");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ROLLBACK TRANSACTION TO SAVEPOINT sp");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ROLLBACK TRANSACTION TO SAVEPOINT savepoint");
+    REQUIRE_NOTHROW(p.parse ());
+}
+
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));
      return 0;

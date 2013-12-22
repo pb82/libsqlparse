@@ -38,6 +38,7 @@ void Parser::registerSubsets() const {
   registerParser ("BEGIN",      new Begin);
   registerParser ("COMMIT",     new Commit);
   registerParser ("END",        new Commit);
+  registerParser ("ROLLBACK",   new Rollback);
 }
 
 void Parser::feed (std::stringstream &source)
