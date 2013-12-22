@@ -35,6 +35,7 @@ void Parser::registerSubsets() const {
   registerParser ("REFERENCES", new ForeignKeyClause);
   registerParser ("ANALYZE",    new Analyze);
   registerParser ("ATTACH",     new Attach);
+  registerParser ("BEGIN",      new Begin);
 }
 
 void Parser::feed (std::stringstream &source)

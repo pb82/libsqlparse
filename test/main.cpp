@@ -933,6 +933,28 @@ TEST_CASE( "statements/attach", "Attach statements" ) {
     p.reset ();
     p.feed ("ATTACH DATABASE 'test' + '.' + 'db' AS [test]");
     REQUIRE_NOTHROW(p.parse ());
+}
+
+TEST_CASE( "statements/begin", "Begin statements" ) {
+    Parser p;
+    p.feed ("BEGIN");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("BEGIN TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("BEGIN DEFERRED TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("BEGIN IMMEDIATE TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("BEGIN EXCLUSIVE TRANSACTION");
+    REQUIRE_NOTHROW(p.parse ());
 
     p.printSyntaxTree (std::cout);
 
