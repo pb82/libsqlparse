@@ -62,11 +62,11 @@ void ColumnConstraint::parse () DEF_THROW {
 
     else if (is("COLLATE")) {
         add("constraint-type", expect(KEYWORD));
-        expect(VALUE);
+        add("collation-name", expectName ());
     }
 
     else if (is("REFERENCES")) {
-
+        getParser ("REFERENCES").parse ();
     }
 
     else {

@@ -32,6 +32,8 @@ void Parser::registerSubsets() const {
   registerParser ("CONFLICT",   new ConflictClause);
   registerParser ("EXPRESSION", new Expression);
   registerParser ("SELECT",     new Select);
+  registerParser ("REFERENCES", new ForeignKeyClause);
+
 }
 
 void Parser::feed (std::stringstream &source)

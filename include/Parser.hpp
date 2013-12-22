@@ -13,6 +13,7 @@
 #include "parsers/ConflictClause.hpp"
 #include "parsers/Expression.hpp"
 #include "parsers/Select.hpp"
+#include "parsers/ForeignKeyClause.hpp"
 
 namespace Sql {
 

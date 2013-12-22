@@ -801,6 +801,110 @@ TEST_CASE( "constraints/column", "Column constraints" ) {
     p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT `PK` PRIMARY KEY NOT NULL UNIQUE");
     REQUIRE_NOTHROW(p.parse ());
 
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT \"PK\" DEFAULT 1");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT \"PK\" DEFAULT -1");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT \"PK\" DEFAULT +1");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT DEF DEFAULT 'a'");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT DEF DEFAULT CURRENT_DATE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT DEF DEFAULT (1+2+3+4+5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer CONSTRAINT DEF COLLATE GERMAN");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer DEFAULT (1+2+3+4+5)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE users ADD COLUMN Id Integer COLLATE GERMAN");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user(id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user(id,name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user MATCH id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user MATCH id MATCH name");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE SET NULL");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE SET DEFAULT");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE CASCADE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE RESTRICT");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE NO ACTION");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE NO ACTION MATCH id ON UPDATE SET NULL MATCH name");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE SET DEFAULT DEFERRABLE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user NOT DEFERRABLE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user NOT DEFERRABLE INITIALLY DEFERRED");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user DEFERRABLE INITIALLY IMMEDIATE");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("ALTER TABLE employee ADD COLUMN Id Integer REFERENCES user ON DELETE NO ACTION MATCH id ON UPDATE SET NULL MATCH name NOT DEFERRABLE INITIALLY DEFERRED");
+    REQUIRE_NOTHROW(p.parse ());
+
 
     p.printSyntaxTree (std::cout);
 }
