@@ -19,6 +19,7 @@
 #include "parsers/Begin.hpp"
 #include "parsers/Commit.hpp"
 #include "parsers/Rollback.hpp"
+#include "parsers/Create.hpp"
 
 namespace Sql {
 

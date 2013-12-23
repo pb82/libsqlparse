@@ -131,6 +131,18 @@ protected:
     bool is(std::initializer_list<T>&& t) const DEF_THROW;
 
     /**
+      * returns true if the element is either a value, string literal
+      * or a identifier
+      */
+    bool isName() const DEF_THROW;
+
+    /**
+      * returns true if the element at the given index
+      * is either a value, string literal or a identifier
+      */
+    bool isName(unsigned int pos) const DEF_THROW;
+
+    /**
      * is the token at the given index of the stream of the supplied
      * value?
      */
@@ -209,7 +221,6 @@ protected:
     }
 
     bool isLiteral() const;
-    bool isName() const;
 };
 
 }

@@ -88,6 +88,20 @@ bool BaseParser::is(unsigned int pos, TOKEN t) const DEF_THROW {
     return tokens.peek (pos).code == t;
 }
 
+bool BaseParser::isName () const DEF_THROW {
+    return
+            tokens.peek ().code == VALUE        ||
+            tokens.peek ().code == IDENTIFIER   ||
+            tokens.peek ().code == STRING;
+}
+
+bool BaseParser::isName (unsigned int pos) const DEF_THROW {
+    return
+            tokens.peek (pos).code == VALUE        ||
+            tokens.peek (pos).code == IDENTIFIER   ||
+            tokens.peek (pos).code == STRING;
+}
+
 template <>
 const SqlToken& BaseParser::expect(TOKEN t) DEF_THROW {
     const SqlToken& token = next();
@@ -157,14 +171,6 @@ bool BaseParser::isLiteral () const {
         is("CURRENT_DATE")  ||
         is("CURRENT_TIME")  ||
         is("CURRENT_TIMESTAMP");
-}
-
-bool BaseParser::isName () const {
-    if (!hasNext ()) {
-        return false;
-    }
-
-    return is(STRING) || is(VALUE) || is(IDENTIFIER);
 }
 
 }

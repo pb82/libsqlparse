@@ -975,7 +975,6 @@ TEST_CASE( "statements/commit", "Commit statements" ) {
     REQUIRE_NOTHROW(p.parse ());
 }
 
-
 TEST_CASE( "statements/rollback", "Rollback statements" ) {
     Parser p;
     p.feed ("ROLLBACK");
@@ -997,6 +996,51 @@ TEST_CASE( "statements/rollback", "Rollback statements" ) {
     p.feed ("ROLLBACK TRANSACTION TO SAVEPOINT savepoint");
     REQUIRE_NOTHROW(p.parse ());
 }
+
+TEST_CASE( "statements/create", "Create index" ) {
+    Parser p;
+    p.feed ("CREATE INDEX i ON user(id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE INDEX i ON user(id, name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE UNIQUE INDEX i ON user(id, name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE UNIQUE INDEX IF NOT EXISTS i ON user(id, name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE INDEX IF NOT EXISTS i ON user(id, name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE INDEX IF NOT EXISTS db.userindex ON user(id, name)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE INDEX IF NOT EXISTS db.userindex ON user(id, name) WHERE 1 == 1");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE UNIQUE INDEX IF NOT EXISTS i ON user(id ASC, name DESC)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE UNIQUE INDEX IF NOT EXISTS i ON user(id COLLATE German ASC, name DESC)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE UNIQUE INDEX IF NOT EXISTS i ON user(id COLLATE 'German' ASC, name DESC)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.printSyntaxTree (std::cout);
+}
+
 
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));

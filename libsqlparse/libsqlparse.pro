@@ -21,7 +21,8 @@ SOURCES += \
     ../src/parsers/Attach.cpp \
     ../src/parsers/Begin.cpp \
     ../src/parsers/Commit.cpp \
-    ../src/parsers/Rollback.cpp
+    ../src/parsers/Rollback.cpp \
+    ../src/parsers/Create.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -59,7 +60,8 @@ HEADERS += \
     ../include/parsers/Attach.hpp \
     ../include/parsers/Begin.hpp \
     ../include/parsers/Commit.hpp \
-    ../include/parsers/Rollback.hpp
+    ../include/parsers/Rollback.hpp \
+    ../include/parsers/Create.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

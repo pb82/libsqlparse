@@ -174,6 +174,10 @@ void Expression::parseExpressionSuffix () DEF_THROW {
         parseExpressionPrefix ();
     }
 
+    if (!hasNext ()) {
+        return;
+    }
+
     if (is(oneOf("ISNULL", "NOTNULL"))) {
         add("postfix", next());
         return;
