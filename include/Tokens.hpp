@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <stack>
 
 #include "./Token.hpp"
 #include "./exceptions/EndOfStreamException.hpp"
@@ -109,6 +110,23 @@ public:
   }
 
   /**
+   * @brief save saves the current position in the stream on a stack
+   * the position can later be retrieved for backtracking purposes
+   */
+  void save() {
+      streamPosition.push (index);
+  }
+
+  /**
+   * @brief restore restores a previously saved position in the stream for
+   * backtracking purposes
+   */
+  void restore() {
+      this->index = streamPosition.top ();
+      streamPosition.pop ();
+  }
+
+  /**
    * @brief operator << allow printing a Tokens instance to a stream using the
    * '<<' operator (e.g. std::cout << tokens << std::endl). A call to this
    * function will not modify the tokens collection.
@@ -133,6 +151,7 @@ private:
 
   unsigned int index;
   std::vector<SqlToken> tokens;
+  std::stack<unsigned int> streamPosition;
 };
 
 }

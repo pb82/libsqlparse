@@ -173,4 +173,20 @@ bool BaseParser::isLiteral () const {
         is("CURRENT_TIMESTAMP");
 }
 
+bool BaseParser::isConstraint () const {
+    if (!hasNext ()) {
+        return false;
+    }
+
+    return is(oneOf(
+                  "CONSTRAINT",
+                  "PRIMARY",
+                  "NOT",
+                  "UNIQUE",
+                  "CHECK",
+                  "DEFAULT",
+                  "COLLATE",
+                  "REFERENCES"));
+}
+
 }

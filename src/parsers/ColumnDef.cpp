@@ -18,20 +18,4 @@ void ColumnDef::parse () DEF_THROW {
     pop();
 }
 
-bool ColumnDef::isConstraint () const {
-    if (!hasNext ()) {
-        return false;
-    }
-
-    return is(oneOf(
-                  "CONSTRAINT",
-                  "PRIMARY",
-                  "NOT",
-                  "UNIQUE",
-                  "CHECK",
-                  "DEFAULT",
-                  "COLLATE",
-                  "REFERENCES"));
-}
-
 } }

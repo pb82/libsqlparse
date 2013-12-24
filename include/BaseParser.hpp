@@ -12,13 +12,15 @@
 #include "./exceptions/UnexpectedTokenException.hpp"
 #include "./exceptions/UnknonwSubsetException.hpp"
 #include "./exceptions/IllegalParserStateException.hpp"
+#include "./exceptions/StreamNotEmptyException.hpp"
 
 #define DEF_THROW throw (                       \
   Exceptions::EndOfStreamException,             \
   Exceptions::IllegalModificationException,     \
   Exceptions::IllegalTokenException,            \
   Exceptions::UnexpectedTokenException,         \
-  Exceptions::IllegalParserStateException)
+  Exceptions::IllegalParserStateException,      \
+  Exceptions::StreamNotEmptyException)
 
 #define oneOf(...)  {__VA_ARGS__}
 
@@ -221,6 +223,21 @@ protected:
     }
 
     bool isLiteral() const;
+    bool isConstraint() const;
+
+    /**
+     * @brief save preserve parser state for backtracking purposes
+     */
+    void save() {
+        tokens.save ();
+    }
+
+    /**
+     * @brief restore parser state for backtracking purposes
+     */
+    void restore() {
+        tokens.restore ();
+    }
 };
 
 }

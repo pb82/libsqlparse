@@ -20,11 +20,11 @@ TEST_CASE( "base/tokenizer", "Tokenizer tests" ) {
 
 TEST_CASE( "base/parser", "Parser tests" ) {
     Parser p;
-    p.feed ("alter table db.users rename to db.user");
+    p.feed ("alter table db.users rename to user");
     REQUIRE_NOTHROW(p.parse ());
 
     p.reset ();
-    p.feed ("ALTER TABLE db.users RENAME TO db.user");
+    p.feed ("ALTER TABLE db.users RENAME TO user");
     REQUIRE_NOTHROW(p.parse ());
 
     p.reset ();
@@ -573,7 +573,7 @@ TEST_CASE( "base/expression", "Sqlite Expressions" ) {
     REQUIRE_NOTHROW(p.parse ());
 
     p.reset ();
-    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ('1' AS INTEGER)))");
+    p.feed ("ALTER TABLE users ADD Id CHECK(CAST ('1' AS INTEGER))");
     REQUIRE_NOTHROW(p.parse ());
 
 
@@ -1037,6 +1037,62 @@ TEST_CASE( "statements/create", "Create index" ) {
     p.reset ();
     p.feed ("CREATE UNIQUE INDEX IF NOT EXISTS i ON user(id COLLATE 'German' ASC, name DESC)");
     REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.reset ();
+    p.feed ("CREATE TABLE user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMP TABLE user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TABLE user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TABLE db.user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMP TABLE user (Id INTEGER, Name String)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMP TABLE user (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name String);");
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss;
+    ss << "CREATE TEMP TABLE user (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name String\n";
+    ss << " ,CONSTRAINT name_unique UNIQUE(name))\n";
+
+    p.reset ();
+    p.feed (ss);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss1;
+    ss1 << "CREATE TABLE user (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name String\n";
+    ss1 << " ,CONSTRAINT name_unique UNIQUE(name)\n";
+    ss1 << " ,CHECK(id > 0));\n";
+
+
+    p.reset ();
+    p.feed (ss1);
+    REQUIRE_NOTHROW(p.parse ());
+
+    std::stringstream ss2;
+    ss2 << "CREATE TABLE user (Id INTEGER PRIMARY KEY ON CONFLICT ROLLBACK AUTOINCREMENT";
+    ss2 << " ,Name String DEFAULT NULL\n";
+    ss2 << " ,CONSTRAINT name_unique UNIQUE(name)\n";
+    ss2 << " ,CHECK(id > 0)) WITHOUT ROWID;\n";
+
+
+    p.reset ();
+    p.feed (ss2);
+    REQUIRE_NOTHROW(p.parse ());
+
 
     p.printSyntaxTree (std::cout);
 }

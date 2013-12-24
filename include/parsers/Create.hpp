@@ -13,6 +13,11 @@ private:
     void parseCreateIndex() DEF_THROW;
     void parseColumnList() DEF_THROW;
     void parseIndexedColumn() DEF_THROW;
+    void parseCreateTable() DEF_THROW;
+    void parseCreateColumnList() DEF_THROW;
+    void parseTableConstraint() DEF_THROW;
+    void parseNameList() DEF_THROW;
+    void parseTableConstraintList() DEF_THROW;
 };
 
 } }

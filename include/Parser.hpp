@@ -28,8 +28,6 @@ public:
   void parse() DEF_THROW;
   void reset();
 
-  static std::map<std::string, std::unique_ptr<BaseParser>> parsers;
-
   /**
    * @brief feedTokens create a token stream from the source input
    * throws IllegalModificationException when tokens are added but

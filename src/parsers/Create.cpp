@@ -11,10 +11,61 @@ void Create::parse () DEF_THROW {
         parseCreateIndex ();
     }
 
+    else if (is(oneOf("TEMP", "TEMPORARY", "TABLE"))) {
+        parseCreateTable ();
+    }
+
     pop();
 }
 
+void Create::parseCreateTable () DEF_THROW {
+    push("table");
+
+    if (is(oneOf("TEMP", "TEMPORARY"))) {
+        add("modifier", next ());
+    }
+
+    expect("TABLE");
+    if (is("IF")) {
+        expect("IF");
+        expect("NOT");
+        expect("EXISTS");
+    }
+
+    if (has(2) && isName (0) && is(1, DOT) && isName (2)) {
+        add("database-name", expectName ());
+        expect(DOT);
+        add("table-name", expectName ());
+    } else {
+        add("table-name", expectName ());
+    }
+
+    if (is(LP)) {
+        consume ();
+        parseCreateColumnList ();
+        expect(RP);
+        if (hasNext () && is("WITHOUT")) {
+            consume ();
+            add("without", expect("ROWID"));
+        }
+    } else if (is("AS")) {
+        consume ();
+        push("as");
+        getParser ("SELECT").parse ();
+        pop ();
+    } else {
+        throw UnexpectedTokenException(peek().value, {
+                                           "(",
+                                           "AS"
+                                       }, peek().line);
+    }
+
+    pop ();
+}
+
 void Create::parseCreateIndex () DEF_THROW {
+    push("index");
+
     if (is("UNIQUE")) {
         add("modifier", next ());
     }
@@ -45,6 +96,111 @@ void Create::parseCreateIndex () DEF_THROW {
         push("where");
         getParser ("EXPRESSION").parse ();
         pop ();
+    }
+
+    pop ();
+}
+
+void Create::parseTableConstraint () DEF_THROW {
+    push("table-constraint");
+
+    if (is("CONSTRAINT")) {
+        consume ();
+        add("name", expectName ());
+    }
+
+    if (is("PRIMARY")) {
+        push("primary-key");
+        consume ();
+        expect("KEY");
+        expect(LP);
+        parseColumnList ();
+        expect(RP);
+        getParser ("CONFLICT").parse ();
+        pop ();
+    }
+
+    else if (is("UNIQUE")) {
+        push("unique");
+        consume ();
+        expect(LP);
+        parseColumnList ();
+        expect(RP);
+        getParser ("CONFLICT").parse ();
+        pop ();
+    }
+
+    else if (is("CHECK")) {
+        push ("check");
+        consume ();
+        expect(LP);
+        getParser ("EXPRESSION").parse ();
+        expect(RP);
+        pop ();
+    }
+
+    else if (is("FOREIGN")) {
+        push("foreign");
+        consume ();
+        expect("KEY");
+        expect(LP);
+        parseNameList ();
+        expect(RP);
+        getParser ("REFERENCES").parse ();
+        pop ();
+    }
+
+    else {
+        throw UnexpectedTokenException(peek().value, {
+                                           "CONSTRAINT",
+                                           "PRIMARY",
+                                           "UNIQUE",
+                                           "CHECK",
+                                           "FOREIGN"
+                                       }, peek().line);
+    }
+
+    pop ();
+}
+
+void Create::parseCreateColumnList () DEF_THROW {
+    while (hasNext ()) {
+        if (isConstraint ()) {
+            parseTableConstraint ();
+        } else {
+            getParser ("COLDEF").parse ();
+        }
+        if (hasNext () && is(COMMA)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+
+void Create::parseTableConstraintList () DEF_THROW {
+    while (hasNext ()) {
+        parseTableConstraint ();
+        if (hasNext () && is(COMMA)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+
+
+void Create::parseNameList () DEF_THROW {
+    while (hasNext ()) {
+        add("column-name", expectName ());
+        if (hasNext () && is(COMMA)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
     }
 }
 

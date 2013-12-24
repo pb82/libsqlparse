@@ -18,9 +18,17 @@ void Parser::parse() DEF_THROW {
     }
 
     getParser(peek().value.c_str()).parse();
+    // Eat trailing semicolon
+    if (hasNext () && is(SEMI)) {
+        consume ();
+    }
 
     if (1 != BaseParser::nodeStack.size()) {
       throw IllegalParserStateException();
+    }
+
+    if (BaseParser::hasNext ()) {
+        throw StreamNotEmptyException();
     }
 }
 

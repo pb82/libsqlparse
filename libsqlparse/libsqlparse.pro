@@ -61,7 +61,8 @@ HEADERS += \
     ../include/parsers/Begin.hpp \
     ../include/parsers/Commit.hpp \
     ../include/parsers/Rollback.hpp \
-    ../include/parsers/Create.hpp
+    ../include/parsers/Create.hpp \
+    ../include/exceptions/StreamNotEmptyException.hpp
 
 OTHER_FILES += \
     ../resource/sql.l
