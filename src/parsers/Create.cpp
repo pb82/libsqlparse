@@ -33,7 +33,47 @@ void Create::parse () DEF_THROW {
         parseCreateView ();
     }
 
+    else if (is("VIRTUAL")) {
+        parseCreateVirtualTable ();
+    }
+
+    else {
+        expect(oneOf("UNIQUE", "INDEX", "TEMP", "TEMPORARY", "TABLE", "VIEW", "VIRTUAL"));
+    }
+
     pop();
+}
+
+void Create::parseCreateVirtualTable () DEF_THROW {
+    push("virtual-table");
+
+    expect("VIRTUAL");
+    expect("TABLE");
+    if (is("IF")) {
+        push("if");
+        expect("IF");
+        add("modifier", expect("NOT"));
+        add("condition", expect("EXISTS"));
+        pop ();
+    }
+
+    if (has(2) && isName (0) && is(1, DOT) && isName (2)) {
+        add("database-name", expectName ());
+        expect(DOT);
+        add("table-name", expectName ());
+    } else {
+        add("table-name", expectName ());
+    }
+
+    expect("USING");
+    add("module-name", expectName ());
+    if (hasNext () && is(LP)) {
+        consume ();
+        parseNameList ("module-argument");
+        expect(RP);
+    }
+
+    pop ();
 }
 
 void Create::parseCreateView () DEF_THROW {
@@ -196,7 +236,7 @@ void Create::parseTableConstraint () DEF_THROW {
         consume ();
         expect("KEY");
         expect(LP);
-        parseNameList ();
+        parseNameList ("column-name");
         expect(RP);
         getParser ("REFERENCES").parse ();
         pop ();
@@ -244,9 +284,9 @@ void Create::parseTableConstraintList () DEF_THROW {
 }
 
 
-void Create::parseNameList () DEF_THROW {
+void Create::parseNameList (const char* descriptor) DEF_THROW {
     while (hasNext ()) {
-        add("column-name", expectName ());
+        add(descriptor, expectName ());
         if (hasNext () && is(COMMA)) {
             consume();
             continue;

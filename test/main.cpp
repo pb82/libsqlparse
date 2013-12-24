@@ -1110,6 +1110,22 @@ TEST_CASE( "statements/create", "Create index" ) {
     p.feed ("CREATE TEMPORARY VIEW IF NOT EXISTS master.user AS SELECT *");
     REQUIRE_NOTHROW(p.parse ());
 
+    p.reset ();
+    p.feed ("CREATE VIRTUAL TABLE foo USING perl ");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE VIRTUAL TABLE master.foo USING perl ");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE VIRTUAL TABLE foo USING perl (\"MyVirtualTable\", foo, bar);");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE VIRTUAL TABLE IF NOT EXISTS foo USING perl (\"MyVirtualTable\", foo, bar);");
+    REQUIRE_NOTHROW(p.parse ());
+
 
     p.printSyntaxTree (std::cout);
 }
