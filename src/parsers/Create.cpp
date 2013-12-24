@@ -11,11 +11,61 @@ void Create::parse () DEF_THROW {
         parseCreateIndex ();
     }
 
-    else if (is(oneOf("TEMP", "TEMPORARY", "TABLE"))) {
+    else if (is(oneOf("TEMP", "TEMPORARY"))) {
+        if (is(1, "TABLE")) {
+            parseCreateTable ();
+        }
+
+        else if (is(1, "VIEW")) {
+            parseCreateView ();
+        }
+
+        else {
+            expect(oneOf("TABLE", "VIEW"));
+        }
+    }
+
+    else if (is("TABLE")) {
         parseCreateTable ();
     }
 
+    else if (is("VIEW")) {
+        parseCreateView ();
+    }
+
     pop();
+}
+
+void Create::parseCreateView () DEF_THROW {
+    push("view");
+
+    if (is(oneOf("TEMP", "TEMPORARY"))) {
+        add("modifier", next ());
+    }
+
+    expect("VIEW");
+    if (is("IF")) {
+        push("if");
+        expect("IF");
+        add("modifier", expect("NOT"));
+        add("condition", expect("EXISTS"));
+        pop ();
+    }
+
+    if (has(2) && isName (0) && is(1, DOT) && isName (2)) {
+        add("database-name", expectName ());
+        expect(DOT);
+        add("table-name", expectName ());
+    } else {
+        add("table-name", expectName ());
+    }
+
+    expect("AS");
+    push("as");
+    getParser ("SELECT").parse ();
+    pop ();
+
+    pop ();
 }
 
 void Create::parseCreateTable () DEF_THROW {
@@ -27,9 +77,11 @@ void Create::parseCreateTable () DEF_THROW {
 
     expect("TABLE");
     if (is("IF")) {
+        push("if");
         expect("IF");
-        expect("NOT");
-        expect("EXISTS");
+        add("modifier", expect("NOT"));
+        add("condition", expect("EXISTS"));
+        pop ();
     }
 
     if (has(2) && isName (0) && is(1, DOT) && isName (2)) {

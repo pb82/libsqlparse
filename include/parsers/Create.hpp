@@ -18,6 +18,7 @@ private:
     void parseTableConstraint() DEF_THROW;
     void parseNameList() DEF_THROW;
     void parseTableConstraintList() DEF_THROW;
+    void parseCreateView() DEF_THROW;
 };
 
 } }

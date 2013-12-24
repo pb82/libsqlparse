@@ -1057,6 +1057,10 @@ TEST_CASE( "statements/create", "Create index" ) {
     REQUIRE_NOTHROW(p.parse ());
 
     p.reset ();
+    p.feed ("CREATE TEMPORARY TABLE IF NOT EXISTS db.user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
     p.feed ("CREATE TEMP TABLE user (Id INTEGER, Name String)");
     REQUIRE_NOTHROW(p.parse ());
 
@@ -1091,6 +1095,19 @@ TEST_CASE( "statements/create", "Create index" ) {
 
     p.reset ();
     p.feed (ss2);
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("CREATE VIEW user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY VIEW master.user AS SELECT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY VIEW IF NOT EXISTS master.user AS SELECT *");
     REQUIRE_NOTHROW(p.parse ());
 
 
