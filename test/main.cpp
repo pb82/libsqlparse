@@ -1125,11 +1125,91 @@ TEST_CASE( "statements/create", "Create index" ) {
     p.reset ();
     p.feed ("CREATE VIRTUAL TABLE IF NOT EXISTS foo USING perl (\"MyVirtualTable\", foo, bar);");
     REQUIRE_NOTHROW(p.parse ());
+}
 
+
+TEST_CASE( "statements/update", "Update statements" ) {
+    Parser p;
+    p.feed ("UPDATE User SET name = 'admin'");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ABORT User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR REPLACE User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR FAIL User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR IGNORE User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK master.User SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK master.User indexed BY user_idx SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK master.User not indexed SET name = 'admin';");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK master.User not indexed SET name = 'admin', id = 1;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("UPDATE OR ROLLBACK master.User not indexed SET name = 'admin', id = 1 WHERE id <= 0;");
+    REQUIRE_NOTHROW(p.parse ());
+}
+
+TEST_CASE( "statements/delete", "Delete statements" ) {
+    Parser p;
+    p.feed ("Delete from User Where Id > 500;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from User Where Id > 500");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from master.User Where Id > 500");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from master.User Indexed by idx_user Where Id > 500");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from master.User NOT INDEXED Where Id > 500");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from master.User;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("Delete from User;");
+    REQUIRE_NOTHROW(p.parse ());
 
     p.printSyntaxTree (std::cout);
 }
-
 
 int main (int argc, char* const argv[]) {
      exit(Catch::Main( argc, argv ));

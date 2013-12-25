@@ -20,8 +20,12 @@ void Create::parse () DEF_THROW {
             parseCreateView ();
         }
 
+        else if (is(1, "TRIGGER")) {
+            parseCreateTrigger ();
+        }
+
         else {
-            expect(oneOf("TABLE", "VIEW"));
+            expect(oneOf("TABLE", "VIEW", "TRIGGER"));
         }
     }
 
@@ -37,11 +41,129 @@ void Create::parse () DEF_THROW {
         parseCreateVirtualTable ();
     }
 
+    else if (is("TRIGGER")) {
+        parseCreateTrigger ();
+    }
+
     else {
         expect(oneOf("UNIQUE", "INDEX", "TEMP", "TEMPORARY", "TABLE", "VIEW", "VIRTUAL"));
     }
 
     pop();
+}
+
+void Create::parseCreateTrigger () DEF_THROW {
+    push("trigger");
+
+    if (is(oneOf("TEMP", "TEMPORARY"))) {
+        add("modifier", next ());
+    }
+
+    expect("TRIGGER");
+    if (is("IF")) {
+        push("if");
+        expect("IF");
+        add("modifier", expect("NOT"));
+        add("condition", expect("EXISTS"));
+        pop ();
+    }
+
+    if (has(2) && isName (0) && is(1, DOT) && isName (2)) {
+        add("database-name", expectName ());
+        expect(DOT);
+        add("trigger-name", expectName ());
+    } else {
+        add("trigger-name", expectName ());
+    }
+
+    if (is(oneOf("BEFORE", "AFTER"))) {
+        add("modifier", next());
+    }
+
+    if (is("INSTEAD")) {
+        add("modifier", next());
+        expect ("OF");
+    }
+
+
+    if (is("DELETE")) {
+        add("on", next());
+        expect("ON");
+    }
+
+    else if (is("INSERT")) {
+        add("on", next());
+        expect("ON");
+    }
+
+    else if (is("UPDATE")) {
+        add("on", next());
+        if (!is("ON")) {
+            expect("OF");
+            push("of");
+            parseNameList ("column-name");
+            pop ();
+        }
+        expect("ON");
+    }
+
+    else {
+        expect(oneOf("DELETE", "INSERT", "UPDATE"));
+    }
+
+    add("table-name", expectName ());
+
+    if (is("FOR")) {
+        consume ();
+        push ("for");
+        add("modifier", expect("EACH"));
+        add("entity", expect("ROW"));
+        pop ();
+    }
+
+    if (is("WHEN")) {
+        consume ();
+        push("when");
+        getParser ("EXPRESSION").parse ();
+        pop ();
+    }
+
+    expect ("BEGIN");
+    parseTriggerActionList ();
+    expect ("END");
+
+    pop ();
+}
+
+void Create::parseTriggerActionList () DEF_THROW {
+    while (hasNext ()) {
+        if (is("UPDATE")) {
+            getParser ("UPDATE").parse ();
+        }
+
+        else if (is("INSERT")) {
+            getParser ("INSERT").parse ();
+        }
+
+        else if (is("DELETE")) {
+            getParser ("DELETE").parse ();
+        }
+
+        else if (is("SELECT")) {
+            getParser ("SELECT").parse ();
+        }
+
+        else {
+            expect(oneOf("UPDATE", "INSERT", "DELETE", "SELECT"));
+        }
+
+        if (hasNext () && is(SEMI)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
+    }
 }
 
 void Create::parseCreateVirtualTable () DEF_THROW {

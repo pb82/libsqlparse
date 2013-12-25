@@ -33,21 +33,25 @@ void Parser::parse() DEF_THROW {
 }
 
 void Parser::registerSubsets() const {
-  registerParser ("ALTER",      new AlterTable);
-  registerParser ("COLDEF",     new ColumnDef);
-  registerParser ("TYPENAME",   new TypeName);
-  registerParser ("COLCONSTR",  new ColumnConstraint);
-  registerParser ("CONFLICT",   new ConflictClause);
-  registerParser ("EXPRESSION", new Expression);
-  registerParser ("SELECT",     new Select);
-  registerParser ("REFERENCES", new ForeignKeyClause);
-  registerParser ("ANALYZE",    new Analyze);
-  registerParser ("ATTACH",     new Attach);
-  registerParser ("BEGIN",      new Begin);
-  registerParser ("COMMIT",     new Commit);
-  registerParser ("END",        new Commit);
-  registerParser ("ROLLBACK",   new Rollback);
-  registerParser ("CREATE",     new Create);
+  registerParser ("ALTER",          new AlterTable);
+  registerParser ("COLDEF",         new ColumnDef);
+  registerParser ("TYPENAME",       new TypeName);
+  registerParser ("COLCONSTR",      new ColumnConstraint);
+  registerParser ("CONFLICT",       new ConflictClause);
+  registerParser ("EXPRESSION",     new Expression);
+  registerParser ("SELECT",         new Select);
+  registerParser ("REFERENCES",     new ForeignKeyClause);
+  registerParser ("ANALYZE",        new Analyze);
+  registerParser ("ATTACH",         new Attach);
+  registerParser ("BEGIN",          new Begin);
+  registerParser ("COMMIT",         new Commit);
+  registerParser ("END",            new Commit);
+  registerParser ("ROLLBACK",       new Rollback);
+  registerParser ("CREATE",         new Create);
+  registerParser ("UPDATE",         new Update);
+  registerParser ("INSERT",         new Insert);
+  registerParser ("DELETE",         new Delete);
+  registerParser ("QUALIFIEDTABLE", new QualifiedTableName);
 }
 
 void Parser::feed (std::stringstream &source)

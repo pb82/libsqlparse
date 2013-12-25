@@ -20,6 +20,10 @@
 #include "parsers/Commit.hpp"
 #include "parsers/Rollback.hpp"
 #include "parsers/Create.hpp"
+#include "parsers/Update.hpp"
+#include "parsers/Insert.hpp"
+#include "parsers/Delete.hpp"
+#include "parsers/QualifiedTableName.hpp"
 
 namespace Sql {
 

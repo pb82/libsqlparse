@@ -20,6 +20,8 @@ private:
     void parseTableConstraintList() DEF_THROW;
     void parseCreateView() DEF_THROW;
     void parseCreateVirtualTable() DEF_THROW;
+    void parseCreateTrigger() DEF_THROW;
+    void parseTriggerActionList() DEF_THROW;
 };
 
 } }

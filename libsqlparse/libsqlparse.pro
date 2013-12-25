@@ -22,7 +22,11 @@ SOURCES += \
     ../src/parsers/Begin.cpp \
     ../src/parsers/Commit.cpp \
     ../src/parsers/Rollback.cpp \
-    ../src/parsers/Create.cpp
+    ../src/parsers/Create.cpp \
+    ../src/parsers/Update.cpp \
+    ../src/parsers/Insert.cpp \
+    ../src/parsers/Delete.cpp \
+    ../src/parsers/QualifiedTableName.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -62,7 +66,11 @@ HEADERS += \
     ../include/parsers/Commit.hpp \
     ../include/parsers/Rollback.hpp \
     ../include/parsers/Create.hpp \
-    ../include/exceptions/StreamNotEmptyException.hpp
+    ../include/exceptions/StreamNotEmptyException.hpp \
+    ../include/parsers/Update.hpp \
+    ../include/parsers/Insert.hpp \
+    ../include/parsers/Delete.hpp \
+    ../include/parsers/QualifiedTableName.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

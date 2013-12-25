@@ -63,6 +63,7 @@
 (?i:IMMEDIATE)                      return KEYWORD;
 (?i:IN)                             return KEYWORD;
 (?i:INDEX)                          return KEYWORD;
+(?i:INDEXED)                        return KEYWORD;
 (?i:INITIALLY)                      return KEYWORD;
 (?i:INNER)                          return KEYWORD;
 (?i:INSERT)                         return KEYWORD;
