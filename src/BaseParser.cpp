@@ -158,6 +158,18 @@ throw (UnknownSubsetException, EndOfStreamException) {
   return *(parsers[type]);
 }
 
+void BaseParser::parseNameList (const char* name) DEF_THROW {
+    while (hasNext ()) {
+        add(name, expectName ());
+        if (hasNext () && is(COMMA)) {
+            consume();
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+
 bool BaseParser::isLiteral () const {
     if (!hasNext ()) {
         return false;

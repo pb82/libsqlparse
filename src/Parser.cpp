@@ -4,7 +4,6 @@ namespace Sql {
 using namespace Exceptions;
 using namespace Parsers;
 
-
 void Parser::parse() DEF_THROW {
     registerSubsets();
     nodeStack.push (&root);
@@ -111,13 +110,13 @@ void Parser::printSyntaxTreeInternal(std::ostream &stream,
     static int indent = 0;
     indent ++;
 
-    auto printIndentation = [] (int num) {
+    auto printIndentation = [] (int num, std::ostream &stream) {
         for (int i = 0; i < num; i++) {
-          std::cout << "..";
+          stream << "..";
         }
     };
 
-    printIndentation(indent);
+    printIndentation(indent, stream);
     stream
             << "[(" << node->getCode()
             << ") " << node->getKey ()

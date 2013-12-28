@@ -225,6 +225,8 @@ protected:
     bool isLiteral() const;
     bool isConstraint() const;
 
+    void parseNameList(const char* name) DEF_THROW;
+
     /**
      * @brief save preserve parser state for backtracking purposes
      */

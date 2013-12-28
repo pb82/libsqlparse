@@ -8,6 +8,11 @@ namespace Sql { namespace Parsers {
 class Insert : public BaseParser {
 public:
     void parse() DEF_THROW;
+
+private:
+    void parseValues() DEF_THROW;
+    void parseValuesList() DEF_THROW;
+    void parseExpressionList() DEF_THROW;
 };
 
 } }

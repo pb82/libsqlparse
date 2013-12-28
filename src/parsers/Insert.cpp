@@ -38,9 +38,77 @@ void Insert::parse () DEF_THROW {
         add("table-name", expectName ());
     }
 
+    if (is(LP)) {
+        consume ();
+        parseNameList ("column-name");
+        expect (RP);
+    }
 
+    if (is("DEFAULT")) {
+        expect ("VALUES");
+    }
+
+    else if (is(LP)) {
+        consume ();
+        parseNameList ("column-name");
+        expect (RP);
+        if (is("VALUES")) {
+            parseValues ();
+        } else if (is("SELECT")) {
+            getParser ("SELECT").parse ();
+        } else {
+            expect (oneOf("VALUES", "SELECT"));
+        }
+    }
+
+    else if (is("VALUES")) {
+        parseValues ();
+    }
+
+    else if (is("SELECT")) {
+        getParser ("SELECT").parse ();
+    }
+
+    else {
+        expect(oneOf("(", "VALUES", "SELECT", "DEFAULT"));
+    }
 
     pop();
+}
+
+void Insert::parseValues () DEF_THROW {
+    expect("VALUES");
+    parseValuesList ();
+}
+
+void Insert::parseValuesList () DEF_THROW {
+    while (hasNext ()) {
+        expect(LP);
+        push ("values");
+        parseExpressionList ();
+        pop ();
+        expect(RP);
+        if (is(COMMA)) {
+            consume ();
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+
+void Insert::parseExpressionList () DEF_THROW {
+    while (hasNext ()) {
+        push ("value");
+        getParser ("EXPRESSION").parse ();
+        pop ();
+        if (is(COMMA)) {
+            consume ();
+            continue;
+        } else {
+            break;
+        }
+    }
 }
 
 } }

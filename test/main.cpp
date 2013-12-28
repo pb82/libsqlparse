@@ -156,6 +156,7 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.feed (ss12);
     REQUIRE_NOTHROW(p.parse ());
 
+
     std::stringstream ss13;
     ss13 << "SELECT DISTINCT *";
 
@@ -163,12 +164,14 @@ TEST_CASE( "base/parser", "Parser tests" ) {
     p.feed (ss13);
     REQUIRE_NOTHROW(p.parse ());
 
+
     std::stringstream ss14;
     ss14 << "SELECT ALL *";
 
     p.reset ();
     p.feed (ss14);
     REQUIRE_NOTHROW(p.parse ());
+
 
     std::stringstream ss15;
     ss15 << "SELECT users.*";
@@ -1125,6 +1128,69 @@ TEST_CASE( "statements/create", "Create index" ) {
     p.reset ();
     p.feed ("CREATE VIRTUAL TABLE IF NOT EXISTS foo USING perl (\"MyVirtualTable\", foo, bar);");
     REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TRIGGER t delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TRIGGER master.user delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMP TRIGGER master.user delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER master.user delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user BEFORE delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user AFTER delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF delete on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF INSERT on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id, Description on User BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id, Description on User For each row BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id, Description on User For each row WHEN 1 == 1 and 2 == 2 BEGIN delete from user END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id, Description on User For each row WHEN 1 == 1 and 2 == 2 BEGIN delete from user; update or abort user set Id = 0 where Id > 0 END;");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+    p.printSyntaxTree (std::cout);
 }
 
 
@@ -1207,8 +1273,6 @@ TEST_CASE( "statements/delete", "Delete statements" ) {
     p.reset ();
     p.feed ("Delete from User;");
     REQUIRE_NOTHROW(p.parse ());
-
-    p.printSyntaxTree (std::cout);
 }
 
 int main (int argc, char* const argv[]) {

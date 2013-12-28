@@ -405,19 +405,6 @@ void Create::parseTableConstraintList () DEF_THROW {
     }
 }
 
-
-void Create::parseNameList (const char* descriptor) DEF_THROW {
-    while (hasNext ()) {
-        add(descriptor, expectName ());
-        if (hasNext () && is(COMMA)) {
-            consume();
-            continue;
-        } else {
-            break;
-        }
-    }
-}
-
 void Create::parseColumnList () DEF_THROW {
     while (hasNext ()) {
         parseIndexedColumn ();

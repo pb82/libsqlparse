@@ -16,7 +16,6 @@ private:
     void parseCreateTable() DEF_THROW;
     void parseCreateColumnList() DEF_THROW;
     void parseTableConstraint() DEF_THROW;
-    void parseNameList(const char* descriptor) DEF_THROW;
     void parseTableConstraintList() DEF_THROW;
     void parseCreateView() DEF_THROW;
     void parseCreateVirtualTable() DEF_THROW;

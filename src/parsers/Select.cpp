@@ -10,12 +10,152 @@ void Select::parse () DEF_THROW {
         add("modifier", expect(oneOf("DISTINCT", "ALL")));
     }
 
-    do {
-        if (is(COMMA)) consume();
-        parseResultCol ();
-    } while (hasNext () && is(COMMA));
+    parseResultColList ();
+
+    if (hasNext () && is("FROM")) {
+        parseJoinSource ();
+    }
 
     pop();
+}
+
+void Select::parseJoinSource () DEF_THROW {
+    expect ("FROM");
+    parseSingleSource ();
+    if (isJoinOp ()) {
+        parseJoinOpList ();
+    }
+}
+
+void Select::parseSingleSource () DEF_THROW {
+    push ("single-source");
+
+    if (is(LP)) {
+        consume ();
+        if (is("SELECT")) {
+            getParser ("SELECT").parse ();
+            expect (RP);
+            if (is ("AS")) {
+                consume ();
+                add("table-alias", expectName ());
+            }
+        } else {
+            parseJoinSource ();
+        }
+    }
+
+    else {
+        if (has(2) && isName (0) && is(1, DOT) && isName (2)) {
+            add("database-name", expectName ());
+            expect(DOT);
+            add("table-name", expectName ());
+        } else {
+            add("table-name", expectName ());
+        }
+
+        if (is("AS")) {
+            push ("as");
+            consume ();
+            add ("alias", next());
+            pop ();
+        }
+
+        if (is("INDEXED")) {
+            consume ();
+            expect ("BY");
+            add("index-name", expectName ());
+        }
+
+        else if (is("NOT")) {
+            expect ("INDEXED");
+        }
+    }
+
+    pop ();
+}
+
+void Select::parseJoinOpList () DEF_THROW {
+    while (isJoinOp ()) {
+        parseJoinOp ();
+        parseSingleSource ();
+        if (hasNext () && is (oneOf("ON", "USING"))) {
+            parseJoinConstraint ();
+        }
+    }
+}
+
+void Select::parseJoinConstraint () DEF_THROW {
+    if (is("ON")) {
+        consume ();
+        getParser ("EXPRESSION").parse ();
+    } else {
+        expect ("USING");
+        expect(LP);
+        parseNameList ("column-name");
+        expect (RP);
+    }
+}
+
+void Select::parseJoinOp () DEF_THROW {
+    push ("join-op");
+
+    if (is(COMMA)) {
+        consume ();
+        return;
+    }
+
+    if (is("NATURAL")) {
+        add ("natural", next ());
+    }
+
+    if (is("JOIN")) {
+        add("type", next());
+    }
+
+    else if (is("LEFT")) {
+        add("type", next());
+        if (is("OUTER")) {
+            add ("outer", next ());
+        }
+
+        expect ("JOIN");
+    }
+
+    else if (is("INNER")) {
+        add("type", next());
+        expect("JOIN");
+    }
+
+    else if (is("CROSS")) {
+        add("type", next());
+        expect("JOIN");
+    }
+
+    pop ();
+}
+
+bool Select::isJoinOp () const {
+    if (is(COMMA)) {
+        return true;
+    }
+
+    if (is(oneOf("NATURAL", "JOIN", "LEFT", "INNER", "CROSS"))) {
+        return true;
+    }
+
+    return false;
+}
+
+void Select::parseResultColList () DEF_THROW {
+    while (hasNext ()) {
+        parseResultCol ();
+        if (hasNext () && is(COMMA)) {
+            consume ();
+            continue;
+        } else {
+            break;
+        }
+    }
 }
 
 void Select::parseResultCol () DEF_THROW {
@@ -30,8 +170,10 @@ void Select::parseResultCol () DEF_THROW {
     } else {
         getParser ("EXPRESSION").parse ();
         if (is("AS")) {
+            push ("as");
             consume ();
             add ("alias", next());
+            pop ();
         } else if (is(VALUE)) {
             add ("alias", next());
         }
