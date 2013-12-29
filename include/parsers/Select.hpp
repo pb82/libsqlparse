@@ -16,8 +16,12 @@ private:
     void parseJoinOp() DEF_THROW;
     void parseJoinOpList() DEF_THROW;
     void parseJoinConstraint() DEF_THROW;
+    void parseGroupBy() DEF_THROW;
+    void parseSelectCore() DEF_THROW;
+    void parseCompoundOperator() DEF_THROW;
 
     bool isJoinOp() const;
+    bool isCompoundOperator() const;
 };
 
 } }

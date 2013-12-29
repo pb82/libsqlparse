@@ -51,6 +51,7 @@ void Parser::registerSubsets() const {
   registerParser ("INSERT",         new Insert);
   registerParser ("DELETE",         new Delete);
   registerParser ("QUALIFIEDTABLE", new QualifiedTableName);
+  registerParser ("ORDERINGTERM",   new OrderingTerm);
 }
 
 void Parser::feed (std::stringstream &source)

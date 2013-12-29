@@ -158,6 +158,20 @@ throw (UnknownSubsetException, EndOfStreamException) {
   return *(parsers[type]);
 }
 
+void BaseParser::parseExpressionList (const char *name) DEF_THROW {
+    while (hasNext ()) {
+        push(name);
+        getParser ("EXPRESSION").parse ();
+        pop ();
+        if (is(COMMA)) {
+            consume ();
+            continue;
+        } else {
+            break;
+        }
+    }
+}
+
 void BaseParser::parseNameList (const char* name) DEF_THROW {
     while (hasNext ()) {
         add(name, expectName ());

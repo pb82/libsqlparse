@@ -26,7 +26,8 @@ SOURCES += \
     ../src/parsers/Update.cpp \
     ../src/parsers/Insert.cpp \
     ../src/parsers/Delete.cpp \
-    ../src/parsers/QualifiedTableName.cpp
+    ../src/parsers/QualifiedTableName.cpp \
+    ../src/parsers/OrderingTerm.cpp
 
 FLEXSOURCES += ../resource/sql.l
 OTHER_FILES += $$FLEXSOURCES
@@ -70,7 +71,8 @@ HEADERS += \
     ../include/parsers/Update.hpp \
     ../include/parsers/Insert.hpp \
     ../include/parsers/Delete.hpp \
-    ../include/parsers/QualifiedTableName.hpp
+    ../include/parsers/QualifiedTableName.hpp \
+    ../include/parsers/OrderingTerm.hpp
 
 OTHER_FILES += \
     ../resource/sql.l

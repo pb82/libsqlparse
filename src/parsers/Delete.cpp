@@ -18,6 +18,10 @@ void Delete::parse () DEF_THROW {
         pop ();
     }
 
+    if (hasNext () && is (oneOf("ORDER", "LIMIT"))) {
+        getParser ("ORDERINGTERM").parse ();
+    }
+
     pop();
 }
 

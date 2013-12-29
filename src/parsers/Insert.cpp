@@ -85,23 +85,9 @@ void Insert::parseValuesList () DEF_THROW {
     while (hasNext ()) {
         expect(LP);
         push ("values");
-        parseExpressionList ();
+        parseExpressionList ("value");
         pop ();
         expect(RP);
-        if (is(COMMA)) {
-            consume ();
-            continue;
-        } else {
-            break;
-        }
-    }
-}
-
-void Insert::parseExpressionList () DEF_THROW {
-    while (hasNext ()) {
-        push ("value");
-        getParser ("EXPRESSION").parse ();
-        pop ();
         if (is(COMMA)) {
             consume ();
             continue;

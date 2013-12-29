@@ -12,7 +12,6 @@ public:
 private:
     void parseValues() DEF_THROW;
     void parseValuesList() DEF_THROW;
-    void parseExpressionList() DEF_THROW;
 };
 
 } }

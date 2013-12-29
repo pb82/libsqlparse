@@ -24,6 +24,7 @@
 #include "parsers/Insert.hpp"
 #include "parsers/Delete.hpp"
 #include "parsers/QualifiedTableName.hpp"
+#include "parsers/OrderingTerm.hpp"
 
 namespace Sql {
 

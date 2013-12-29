@@ -226,6 +226,7 @@ protected:
     bool isConstraint() const;
 
     void parseNameList(const char* name) DEF_THROW;
+    void parseExpressionList(const char*name) DEF_THROW;
 
     /**
      * @brief save preserve parser state for backtracking purposes

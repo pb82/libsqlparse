@@ -4,7 +4,36 @@ namespace Sql { namespace Parsers {
 using namespace Exceptions;
 
 void Select::parse () DEF_THROW {
-    push("select-stmt");
+    while (hasNext ()) {
+        parseSelectCore ();
+        if (hasNext () && isCompoundOperator ()) {
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    getParser ("ORDERINGTERM").parse ();
+}
+
+bool Select::isCompoundOperator () const {
+    return hasNext () && is(oneOf("UNION", "INTERSECT", "EXCEPT"));
+}
+
+void Select::parseCompoundOperator () DEF_THROW {
+    push("compound-operator");
+    if (is("UNION")) {
+        add ("type", next ());
+        if (hasNext () && is ("ALL")) {
+            add("modifier", next ());
+        }
+    }
+
+    expect(oneOf("INTERSECT", "EXCEPT"));
+}
+
+void Select::parseSelectCore () DEF_THROW {
+    push("select-core");
     expect("SELECT");
     if (is(oneOf("DISTINCT", "ALL"))) {
         add("modifier", expect(oneOf("DISTINCT", "ALL")));
@@ -13,10 +42,37 @@ void Select::parse () DEF_THROW {
     parseResultColList ();
 
     if (hasNext () && is("FROM")) {
+        push ("from");
         parseJoinSource ();
+        pop ();
+    }
+
+    if (hasNext () && is("WHERE")) {
+        consume ();
+        push ("where");
+        getParser ("EXPRESSION").parse ();
+        pop ();
+    }
+
+    if (hasNext () && is("GROUP")) {
+        push("group-by");
+        parseGroupBy ();
+        pop ();
     }
 
     pop();
+
+}
+
+void Select::parseGroupBy () DEF_THROW {
+    expect("GROUP");
+    expect("BY");
+    parseExpressionList ("group-by-expression");
+
+    if (hasNext () && is("HAVING")) {
+        consume ();
+        getParser ("EXPRESSION").parse ();
+    }
 }
 
 void Select::parseJoinSource () DEF_THROW {

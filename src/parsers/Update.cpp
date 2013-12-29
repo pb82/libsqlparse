@@ -31,6 +31,8 @@ void Update::parse () DEF_THROW {
         pop ();
     }
 
+    getParser ("ORDERINGTERM").parse ();
+
     pop();
 }
 
