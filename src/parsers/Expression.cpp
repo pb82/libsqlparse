@@ -286,7 +286,7 @@ void Expression::parseInStatement () DEF_THROW {
 void Expression::parseComparison () DEF_THROW {
     add("comparator", expect(oneOf("LIKE", "GLOB", "REGEXP", "MATCH")));
     parseExpressionPrefix ();
-    if (is("ESCAPE")) {
+    if (hasNext () && is("ESCAPE")) {
         add ("escape", next());
         parseExpressionPrefix ();
     }

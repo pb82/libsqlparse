@@ -1188,9 +1188,6 @@ TEST_CASE( "statements/create", "Create index" ) {
     p.reset ();
     p.feed ("CREATE TEMPORARY TRIGGER if not exists master.user INSTEAD OF UPDATE OF Name, Id, Description on User For each row WHEN 1 == 1 and 2 == 2 BEGIN delete from user; update or abort user set Id = 0 where Id > 0 END;");
     REQUIRE_NOTHROW(p.parse ());
-
-
-    p.printSyntaxTree (std::cout);
 }
 
 
@@ -1273,6 +1270,124 @@ TEST_CASE( "statements/delete", "Delete statements" ) {
     p.reset ();
     p.feed ("Delete from User;");
     REQUIRE_NOTHROW(p.parse ());
+}
+
+TEST_CASE( "statements/select", "SELECT statements" ) {
+    Parser p;
+    p.feed ("SELECT *;");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT DISTINCT *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL *");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL Id, Name");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL Id, User.Name");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, User.Name");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, Orga.*");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, Orga.* FROM User");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, Orga.* FROM User, Orga");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User, Orga as O");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User, Orga as O");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User, Orga as O ON 1 = 1");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User, Orga as O USING(Id)");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User LEFT JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User LEFT OUTER JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User INNER JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL LEFT JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL LEFT OUTER JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga ON O.Id = Orga.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id);");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id) WHERE O.Id > 5");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id) WHERE O.Id > 5 AND User.Name like 'TEST'");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id) WHERE O.Id > 5 AND User.Name like 'TEST' or User.name like '%TEST'");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id) WHERE O.Id > 5 AND User.Name like 'TEST' or User.name like '%TEST' GROUP BY User.Id");
+    REQUIRE_NOTHROW(p.parse ());
+
+    p.reset ();
+    p.feed ("SELECT ALL User.Id, O.* FROM User NATURAL INNER JOIN Orga using(id) WHERE O.Id > 5 GROUP BY ID HAVING Id > 7");
+    REQUIRE_NOTHROW(p.parse ());
+
+
+
+    p.printSyntaxTree (std::cout);
 }
 
 int main (int argc, char* const argv[]) {

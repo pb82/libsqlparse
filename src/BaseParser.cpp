@@ -163,7 +163,7 @@ void BaseParser::parseExpressionList (const char *name) DEF_THROW {
         push(name);
         getParser ("EXPRESSION").parse ();
         pop ();
-        if (is(COMMA)) {
+        if (hasNext () && is(COMMA)) {
             consume ();
             continue;
         } else {

@@ -20,7 +20,8 @@
   Exceptions::IllegalTokenException,            \
   Exceptions::UnexpectedTokenException,         \
   Exceptions::IllegalParserStateException,      \
-  Exceptions::StreamNotEmptyException)
+  Exceptions::StreamNotEmptyException,          \
+  Exceptions::UnknownSubsetException)
 
 #define oneOf(...)  {__VA_ARGS__}
 

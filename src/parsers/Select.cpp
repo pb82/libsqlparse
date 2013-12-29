@@ -109,20 +109,20 @@ void Select::parseSingleSource () DEF_THROW {
             add("table-name", expectName ());
         }
 
-        if (is("AS")) {
+        if (hasNext () && is("AS")) {
             push ("as");
             consume ();
             add ("alias", next());
             pop ();
         }
 
-        if (is("INDEXED")) {
+        if (hasNext () && is("INDEXED")) {
             consume ();
             expect ("BY");
             add("index-name", expectName ());
         }
 
-        else if (is("NOT")) {
+        else if (hasNext () && is("NOT")) {
             expect ("INDEXED");
         }
     }
@@ -141,15 +141,23 @@ void Select::parseJoinOpList () DEF_THROW {
 }
 
 void Select::parseJoinConstraint () DEF_THROW {
+    push ("join-constraint");
+
     if (is("ON")) {
+        push ("on");
         consume ();
         getParser ("EXPRESSION").parse ();
+        pop ();
     } else {
+        push ("using");
         expect ("USING");
         expect(LP);
         parseNameList ("column-name");
         expect (RP);
+        pop ();
     }
+
+    pop ();
 }
 
 void Select::parseJoinOp () DEF_THROW {
@@ -157,6 +165,7 @@ void Select::parseJoinOp () DEF_THROW {
 
     if (is(COMMA)) {
         consume ();
+        pop ();
         return;
     }
 
@@ -191,6 +200,10 @@ void Select::parseJoinOp () DEF_THROW {
 }
 
 bool Select::isJoinOp () const {
+    if (!hasNext ()) {
+        return false;
+    }
+
     if (is(COMMA)) {
         return true;
     }
@@ -215,27 +228,27 @@ void Select::parseResultColList () DEF_THROW {
 }
 
 void Select::parseResultCol () DEF_THROW {
+    push ("result-column");
+
     if (is(STAR)) {
         add ("result-col", next ());
-        return;
     } else if (has(2) && is(VALUE) && is(1, DOT) && is(2, STAR)) {
         add("result-table", next());
         expect(DOT);
-        expect(STAR);
-        return;
+        add("result-col", expect(STAR));
     } else {
         getParser ("EXPRESSION").parse ();
-        if (is("AS")) {
+        if (hasNext () && is("AS")) {
             push ("as");
             consume ();
             add ("alias", next());
             pop ();
-        } else if (is(VALUE)) {
+        } else if (hasNext () && is(VALUE)) {
             add ("alias", next());
         }
-
-        return;
     }
+
+    pop ();
 }
 
 } }
